@@ -1,1 +1,7 @@
 numpy
+opcua
+bokeh
+pandas
+plotly
+matplotlib
+dash
