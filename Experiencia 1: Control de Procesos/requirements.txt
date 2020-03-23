@@ -1,7 +1,10 @@
 numpy
 opcua
+scipy
+matplotlib
+pygame
+dash
+plotly
 bokeh
 pandas
-plotly
-matplotlib
-dash
+cryptography
