@@ -432,8 +432,8 @@ first_it = True
 
 sistema = QuadrupleTank(x0=x0, Hmax=Hmax, voltmax=voltmax)
 sistema.time_scaling = 1 # Para el tiempo
-# interfaz = Interfaz_grafica(Hmax=Hmax)
-# interfaz.paint()
+interfaz = Interfaz_grafica(Hmax=Hmax)
+interfaz.paint()
 running = True
 manual = False # Control Manual o automático de las variables
 t = 0
@@ -476,8 +476,8 @@ while running:
 
 
 
-    # interfaz.screen.blit(interfaz.background, (0, 0))
-    # interfaz.screen.blit(interfaz.textSurf, (0,0))
+    interfaz.screen.blit(interfaz.background, (0, 0))
+    interfaz.screen.blit(interfaz.textSurf, (0,0))
 
 
     ####### Simulación del sistema ######
@@ -486,20 +486,20 @@ while running:
         first_it = False
 
     alturas = sistema.sim()
-
+    print(alturas)
     ####### Updates interfaz #################
 
-##    # Tanque 1
-##    interfaz.Tank_update(altura=alturas[0], posicion=interfaz.posTank1)
-##
-##    # Tanque 2
-##    interfaz.Tank_update(altura=alturas[1], posicion=interfaz.posTank2)
-##
-##    # Tanque 3
-##    interfaz.Tank_update(altura=alturas[2], posicion=interfaz.posTank3)
-##
-##    # Tanque 4
-##    interfaz.Tank_update(altura=alturas[3], posicion=interfaz.posTank4)
+    #    # Tanque 1
+    interfaz.Tank_update(altura=alturas[0], posicion=interfaz.posTank1)
+    #
+    #    # Tanque 2
+    interfaz.Tank_update(altura=alturas[1], posicion=interfaz.posTank2)
+    #
+    #    # Tanque 3
+    interfaz.Tank_update(altura=alturas[2], posicion=interfaz.posTank3)
+    #
+    #    # Tanque 4
+    interfaz.Tank_update(altura=alturas[3], posicion=interfaz.posTank4)
 
 
     ############ UPDATE CLIENTE OPC ##################################
@@ -514,8 +514,8 @@ while running:
     cliente.temperaturas['T4'].set_value(22 + random.randrange(-7,7,1))
 
 
-    # pygame.display.flip()
-    # clock.tick(fps)
+    pygame.display.flip()
+    clock.tick(fps)
 
-# pygame.quit()
+pygame.quit()
 

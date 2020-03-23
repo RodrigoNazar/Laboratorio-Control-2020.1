@@ -103,6 +103,6 @@ class Cliente():
 
 
 
-cliente = Cliente("opc.tcp://localhost:4840/freeopcua/server/", suscribir_eventos=True, SubHandler=SubHandler)
-cliente.conectar()
-cliente.subscribir_mv() # Se subscribe a las variables manipuladas
+#cliente = Cliente("opc.tcp://localhost:4840/freeopcua/server/", suscribir_eventos=True, SubHandlerClass=SubHandler)
+#cliente.conectar()
+#cliente.subscribir_mv() # Se subscribe a las variables manipuladas
