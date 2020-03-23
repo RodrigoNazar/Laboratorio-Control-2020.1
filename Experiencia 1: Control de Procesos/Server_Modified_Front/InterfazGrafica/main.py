@@ -6,7 +6,7 @@ from bokeh.plotting import curdoc, figure
 from bokeh.layouts import layout, row
 
 
-''' Modo Automático '''
+''' ******************** Modo Automático ******************** '''
 label1 = Div(text='<h1>Modo Automático</h1>')
 ref = Slider(title="Altura de Referencia", value=0.0, start=0.0, end=50.0,
                    step=0.1)
@@ -16,7 +16,7 @@ Ki = TextInput(title="Constante Integral", value='0')
 Kd = TextInput(title="Constante Derivativa", value='0')
 
 
-''' Modo Manual '''
+''' ******************** Modo Manual ******************** '''
 label2 = Div(text='<h1>Modo Manual</h1>')
 voltageV1 = Slider(title="Voltaje Válvula 1", value=0.0, start=-1.0, end=1.0,
                    step=0.01)
@@ -24,7 +24,7 @@ voltageV2 = Slider(title="Voltaje Válvula 2", value=0.0, start=-1.0, end=1.0,
                    step=0.01)
 
 
-''' Added stuff '''
+''' ******************** Added stuff ******************** '''
 
 # Se crea un seno
 T = np.linspace(0, 1000, 1001)
@@ -72,18 +72,42 @@ layout = layout([
    ])
 
 
-panel1 = Panel(child=Column(label1, ref, Kp, Ki, Kd), title='Modo Automático')
+panel1 = Panel(child=row(Column(label1, ref, Kp, Ki, Kd), layout,
+               sizing_mode='scale_both'), title='Modo Automático')
 panel2 = Panel(child=Column(label2, voltageV1, voltageV2), title='Modo Manual')
 
 # Tabs
 tabs = Tabs(tabs=[panel1, panel2])
 
 
-''' Change functions '''
+''' ******************** Events functions ******************** '''
+
+textInputs = [Kp, Ki, Kd]
+
+sliderInputs = [ref, voltageV1, voltageV2]
+
+
+def textChanges(attr, old, new):
+    '''
+    Get excecuted when a text input changes
+    '''
+    print('attr', attr)
+    print('old', old)
+    print('new', new)
+
+
+def sliderChanges(attr, old, new):
+    '''
+    Get excecuted when the slide value is changed
+    '''
+    print('attr', attr)
+    print('old', old)
+    print('new', new)
 
 
 def panelActive(attr, old, new):
     '''
+    Get excecuted when the other tab is selected
     Changes the operation mode if a tab is changed
     '''
     if tabs.active == 0:
@@ -92,6 +116,12 @@ def panelActive(attr, old, new):
     elif tabs.active == 1:
         print('Modo manual activado')
 
+
+for text in textInputs:
+    text.on_change('value', textChanges)
+
+for slider in sliderInputs:
+    slider.on_change('value', sliderChanges)
 
 tabs.on_change('active', panelActive)
 
