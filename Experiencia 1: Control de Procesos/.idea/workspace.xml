@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7727b2c9-56ad-4059-ad01-12f6b2e7b613" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Server_Modified_Back/historial/cliente_control.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server_Modified_Back/historial/interfaz.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server_Modified_Back/QuadrupleTank.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server_Modified_Back/QuadrupleTank.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server_Modified_Back/TanquesNamespace.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server_Modified_Back/TanquesNamespace.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server_Modified_Back/cliente.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server_Modified_Back/cliente.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server_Modified_Back/historial/InterfazGraficaEjemploBokeh.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server_Modified_Back/historial/InterfazGraficaEjemploBokeh.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server_Modified_Back/historial/Tanques_historial.sql" beforeDir="false" afterPath="$PROJECT_DIR$/Server_Modified_Back/historial/Tanques_historial.sql" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -15,45 +18,52 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/Experiencia_1_Control_de_Procesos$ServidorOPC.coverage" NAME="ServidorOPC Coverage Results" MODIFIED="1584996640080" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server_Modified_Back" />
-    <SUITE FILE_PATH="coverage/Experiencia_1_Control_de_Procesos$QuadrupleTank.coverage" NAME="QuadrupleTank Coverage Results" MODIFIED="1584996872687" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server_Modified_Back" />
+    <SUITE FILE_PATH="coverage/Experiencia_1_Control_de_Procesos$interfaz.coverage" NAME="interfaz Coverage Results" MODIFIED="1585680002242" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server_Modified_Back/historial" />
+    <SUITE FILE_PATH="coverage/Experiencia_1_Control_de_Procesos$cliente_control.coverage" NAME="cliente_control Coverage Results" MODIFIED="1585679872255" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server_Modified_Back" />
+    <SUITE FILE_PATH="coverage/Experiencia_1_Control_de_Procesos$ServidorOPC.coverage" NAME="ServidorOPC Coverage Results" MODIFIED="1585679862047" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server_Modified_Back" />
+    <SUITE FILE_PATH="coverage/Experiencia_1_Control_de_Procesos$InterfazGraficaEjemploBokeh.coverage" NAME="InterfazGraficaEjemploBokeh Coverage Results" MODIFIED="1585278537630" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server_Modified_Back/historial" />
+    <SUITE FILE_PATH="coverage/Experiencia_1_Control_de_Procesos$QuadrupleTank.coverage" NAME="QuadrupleTank Coverage Results" MODIFIED="1585679868133" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server_Modified_Back" />
     <SUITE FILE_PATH="coverage/Experiencia_1__Control_de_Procesos$ServidorOPC.coverage" NAME="ServidorOPC Coverage Results" MODIFIED="1584741731629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server_Modified_Back" />
-    <SUITE FILE_PATH="coverage/Experiencia_1_Control_de_Procesos$cliente.coverage" NAME="cliente Coverage Results" MODIFIED="1584924137478" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server_Modified_Back" />
+    <SUITE FILE_PATH="coverage/Experiencia_1_Control_de_Procesos$cliente.coverage" NAME="cliente Coverage Results" MODIFIED="1585075358534" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server_Modified_Back" />
+    <SUITE FILE_PATH="coverage/Experiencia_1_Control_de_Procesos$InterfazGrafica.coverage" NAME="InterfazGrafica Coverage Results" MODIFIED="1585278627066" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Server_Modified_Back/historial" />
   </component>
   <component name="FUSProjectUsageTrigger">
     <session id="-1426850188">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="3" />
+          <entry key="project.closed" value="5" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.3" value="1" />
           <entry key="project.open.time.4" value="1" />
-          <entry key="project.open.time.5" value="1" />
-          <entry key="project.opened" value="4" />
+          <entry key="project.open.time.5" value="2" />
+          <entry key="project.open.time.6" value="1" />
+          <entry key="project.open.time.9" value="1" />
+          <entry key="project.opened" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="27" />
+          <entry key="py" value="60" />
           <entry key="txt" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="PLAIN_TEXT" value="8" />
-          <entry key="Python" value="27" />
+          <entry key="Python" value="60" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="1" />
+          <entry key="Python Console" value="97" />
+          <entry key="py" value="2712" />
           <entry key="txt" value="62" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="62" />
-          <entry key="Python" value="1" />
+          <entry key="Python" value="2809" />
         </counts>
       </usages-collector>
     </session>
@@ -61,10 +71,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Server_Modified_Back/ServidorOPC.py">
+        <entry file="file://$PROJECT_DIR$/Server_Modified_Back/historial/cliente_control.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="12" lean-forward="true" selection-start-line="6" selection-start-column="29" selection-end-line="6" selection-end-column="45" />
+            <state relative-caret-position="298">
+              <caret line="24" column="33" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
@@ -73,10 +83,34 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Server_Modified_Back/cliente.py">
+        <entry file="file://$PROJECT_DIR$/Server_Modified_Back/historial/InterfazGraficaEjemploBokeh.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="358">
-              <caret line="101" column="49" selection-start-line="101" selection-start-column="49" selection-end-line="101" selection-end-column="49" />
+            <state relative-caret-position="213">
+              <caret line="112" column="12" lean-forward="true" selection-start-line="112" selection-start-column="12" selection-end-line="112" selection-end-column="12" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Server_Modified_Back/historial/InterfazGrafica.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="357">
+              <caret line="47" column="10" lean-forward="true" selection-start-line="47" selection-start-column="10" selection-end-line="47" selection-end-column="10" />
+              <folding>
+                <element signature="e#0#43#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Server_Modified_Back/ServidorOPC.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="315">
+              <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
@@ -84,11 +118,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Server_Modified_Back/QuadrupleTank.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="423">
-              <caret line="520" lean-forward="true" selection-start-line="520" selection-end-line="520" />
+            <state relative-caret-position="343">
+              <caret line="490" column="27" lean-forward="true" selection-start-line="490" selection-start-column="27" selection-end-line="490" selection-end-column="27" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -98,9 +132,18 @@
       </file>
     </leaf>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="FindInProjectRecents">
     <findStrings>
       <find>k</find>
+      <find>interfaz</find>
+      <find>t</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -110,10 +153,15 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/requirements.txt" />
-        <option value="$PROJECT_DIR$/Server_Modified_Back/cliente.py" />
         <option value="$PROJECT_DIR$/Server_Modified_Back/ServidorOPC.py" />
         <option value="$PROJECT_DIR$/Server_Modified_Back/TanquesNamespace.py" />
         <option value="$PROJECT_DIR$/Server_Modified_Back/QuadrupleTank.py" />
+        <option value="$PROJECT_DIR$/Server_Modified_Back/cliente.py" />
+        <option value="$PROJECT_DIR$/Server_Modified_Back/cliente_control.py" />
+        <option value="$PROJECT_DIR$/Server_Modified_Back/historial/InterfazGraficaEjemploBokeh.py" />
+        <option value="$PROJECT_DIR$/Server_Modified_Back/historial/cliente_control.py" />
+        <option value="$PROJECT_DIR$/Server_Modified_Back/historial/HistorialAplicacion/interfaz.py" />
+        <option value="$PROJECT_DIR$/Server_Modified_Back/historial/interfaz.py" />
       </list>
     </option>
   </component>
@@ -134,6 +182,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -156,7 +205,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -165,6 +213,11 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Server_Modified_Back/historial" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -178,7 +231,29 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.QuadrupleTank">
+  <component name="RunManager" selected="Python.interfaz">
+    <configuration name="InterfazGrafica" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Experiencia 1 Control de Procesos" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Server_Modified_Back/historial" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Server_Modified_Back/historial/InterfazGrafica.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="QuadrupleTank" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Experiencia 1 Control de Procesos" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -223,7 +298,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="cliente" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="cliente_control" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Experiencia 1 Control de Procesos" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -236,7 +311,29 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Server_Modified_Back/cliente.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Server_Modified_Back/historial/cliente_control.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="interfaz" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Experiencia 1 Control de Procesos" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Server_Modified_Back/historial" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Server_Modified_Back/historial/interfaz.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -247,14 +344,18 @@
     </configuration>
     <list>
       <item itemvalue="Python.ServidorOPC" />
-      <item itemvalue="Python.cliente" />
       <item itemvalue="Python.QuadrupleTank" />
+      <item itemvalue="Python.cliente_control" />
+      <item itemvalue="Python.InterfazGrafica" />
+      <item itemvalue="Python.interfaz" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.interfaz" />
+        <item itemvalue="Python.cliente_control" />
         <item itemvalue="Python.QuadrupleTank" />
         <item itemvalue="Python.ServidorOPC" />
-        <item itemvalue="Python.cliente" />
+        <item itemvalue="Python.InterfazGrafica" />
       </list>
     </recent_temporary>
   </component>
@@ -271,31 +372,40 @@
     </task>
     <servers />
   </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1680" height="949" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25885227" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26800978" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32905483" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32905483" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32905483" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.32905483" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Terminal" order="11" weight="0.32905483" />
-      <window_info anchor="bottom" id="Python Console" order="12" />
+      <window_info anchor="bottom" id="Python Console" order="12" weight="0.32905483" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="JuliaSciView" order="3" />
-      <window_info anchor="right" id="SciView" order="4" />
+      <window_info anchor="right" id="SciView" order="4" weight="0.32967034" />
       <window_info anchor="right" id="Database" order="5" />
     </layout>
   </component>
@@ -306,33 +416,12 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/historial/PID.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/requirements.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
           <caret line="9" column="12" selection-start-line="9" selection-start-column="12" selection-end-line="9" selection-end-column="12" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/historial/cliente.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/historial/InterfazGrafica.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/historial/InterfazGraficaEjemploDash.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/historial/InterfazGraficaEjemploBokeh.py">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/Server_Modified_Back/pruebas.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -341,30 +430,50 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/TanquesNamespace.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-600">
-          <caret line="8" column="31" lean-forward="true" selection-start-line="8" selection-start-column="31" selection-end-line="8" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/ServidorOPC.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="12" lean-forward="true" selection-start-line="6" selection-start-column="29" selection-end-line="6" selection-end-column="45" />
-          <folding>
-            <element signature="e#0#28#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Server_Modified_Back/cliente.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="358">
-          <caret line="101" column="49" selection-start-line="101" selection-start-column="49" selection-end-line="101" selection-end-column="49" />
+        <state relative-caret-position="930">
+          <caret line="64" column="65" selection-end-line="109" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/TanquesNamespace.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-494">
+          <caret line="71" column="35" selection-start-line="71" selection-start-column="32" selection-end-line="71" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/historial/PID.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/historial/InterfazGraficaEjemploDash.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/historial/interfaz.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="393">
+          <caret line="112" column="69" lean-forward="true" selection-start-line="112" selection-start-column="69" selection-end-line="112" selection-end-column="69" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/historial/cliente.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="47" lean-forward="true" selection-start-line="6" selection-start-column="47" selection-end-line="6" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/historial/cliente_control.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="298">
+          <caret line="24" column="33" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
           </folding>
@@ -373,10 +482,40 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Server_Modified_Back/QuadrupleTank.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="423">
-          <caret line="520" lean-forward="true" selection-start-line="520" selection-end-line="520" />
+        <state relative-caret-position="343">
+          <caret line="490" column="27" lean-forward="true" selection-start-line="490" selection-start-column="27" selection-end-line="490" selection-end-column="27" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/historial/InterfazGraficaEjemploBokeh.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="213">
+          <caret line="112" column="12" lean-forward="true" selection-start-line="112" selection-start-column="12" selection-end-line="112" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/ServidorOPC.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Server_Modified_Back/historial/InterfazGrafica.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="47" column="10" lean-forward="true" selection-start-line="47" selection-start-column="10" selection-end-line="47" selection-end-column="10" />
+          <folding>
+            <element signature="e#0#43#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -50,12 +50,6 @@ class Cliente():
         self.alturas['H3'] = self.Tanques.get_child(['2:Tanque3', '2:h'])
         self.alturas['H4'] = self.Tanques.get_child(['2:Tanque4', '2:h'])
 
-        # Obtención de temperaturas
-        self.temperaturas['T1'] = self.Tanques.get_child(['2:Tanque1', '2:T'])
-        self.temperaturas['T2'] = self.Tanques.get_child(['2:Tanque2', '2:T'])
-        self.temperaturas['T3'] = self.Tanques.get_child(['2:Tanque3', '2:T'])
-        self.temperaturas['T4'] = self.Tanques.get_child(['2:Tanque4', '2:T'])
-
         # Obtención de los pumps
         self.valvulas['valvula1'] = self.Valvulas.get_child(['2:Valvula1', '2:u'])
         self.valvulas['valvula2'] = self.Valvulas.get_child(['2:Valvula2', '2:u'])
@@ -105,5 +99,5 @@ class Cliente():
 if "__main__" == __name__:
     cliente = Cliente("opc.tcp://localhost:4840/freeopcua/server/", suscribir_eventos=True, SubHandler=SubHandler)
     cliente.conectar()
-    print(cliente.alturas.items())
     # cliente.subscribir_mv() # Se subscribe a las variables manipuladas
+    cliente.subscribir_cv() # Se subscribe a las variables controladas
