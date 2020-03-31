@@ -5,11 +5,6 @@ from bokeh.plotting import curdoc, figure
 import threading
 from cliente_control import Cliente
 
-# Se crea un seno
-T = np.linspace(0, 1000, 1001)
-sin = np.sin(T) * 60
-cos = np.cos(T) * 20 + 30
-
 # DataSources
 DataSource_tanque1 = ColumnDataSource(dict(time=[], ref=[], real=[]))
 DataSource_tanque2 = ColumnDataSource(dict(time=[], ref=[], real=[]))
@@ -62,35 +57,11 @@ real_tanque3 = PreText(text='Valor real: 0.00', width=600, style=estilo2)
 
 real_tanque4 = PreText(text='Valor real: 0.00', width=600, style=estilo2)
 
-t = 0
-
-
-def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostrar la informacion
-    global t, sin, cos
-    # update = dict(time=[t], ref=[40], real=[cos[t]])
-    # DataSource_tanque1.stream(new_data=update, rollover=100)  # Se ven los ultimos 100 datos
-    # ref_tanque1.text = 'Valor de referencia: {}'.format(round(sin[t], 2))
-    # real_tanque1.text = 'Valor real: {}'.format(round(cos[t], 2))
-
-    # DataSource_tanque2.stream(new_data=update, rollover=100)  # Se ven los ultimos 100 datos
-    # ref_tanque2.text = 'Valor de referencia: {}'.format(round(sin[t], 2))
-    # real_tanque2.text = 'Valor real: {}'.format(round(cos[t], 2))
-
-    update = dict(time=[t], real=[cos[t]])
-    DataSource_tanque3.stream(new_data=update, rollover=100)  # Se ven los ultimos 100 datos
-    real_tanque3.text = 'Valor real: {}'.format(round(cos[t], 2))
-
-    DataSource_tanque4.stream(new_data=update, rollover=100)  # Se ven los ultimos 100 datos
-    real_tanque4.text = 'Valor real: {}'.format(round(cos[t], 2))
-
-    t += 1
-
 
 def funcion_handler(node, val):
     key = node.get_parent().get_display_name().Text
     if key == 'Tanque1':
-        update = dict(time=[t], ref=[40], real=[val])
-        DataSource_tanque1.stream(new_data=update, rollover=100)  # Se ven los ultimos 100 datos
+        lolito = val
 
 
 class SubHandler(object):
@@ -110,17 +81,44 @@ class SubHandler(object):
         print("Python: New event", event)
 
 
+cliente = Cliente("opc.tcp://localhost:4840/freeopcua/server/", suscribir_eventos=True, SubHandler=SubHandler)
+cliente.conectar()
+
+t = 0
+
+
+def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostrar la informacion
+    global t
+
+    h1 = cliente.alturas['H1'].get_value()
+    update = dict(time=[t], ref=[32], real=[h1])
+    DataSource_tanque1.stream(new_data=update, rollover=50)  # Se ven los ultimos 100 datos
+    real_tanque1.text = 'Valor real: {}'.format(round(h1, 2))
+
+    h2 = cliente.alturas['H2'].get_value()
+    update = dict(time=[t], ref=[32], real=[h2])
+    DataSource_tanque2.stream(new_data=update, rollover=50)  # Se ven los ultimos 100 datos
+    real_tanque2.text = 'Valor real: {}'.format(round(h2, 2))
+
+    h3 = cliente.alturas['H3'].get_value()
+    update = dict(time=[t], real=[h3])
+    DataSource_tanque3.stream(new_data=update, rollover=50)  # Se ven los ultimos 100 datos
+    real_tanque3.text = 'Valor real: {}'.format(round(h3, 2))
+
+    h4 = cliente.alturas['H4'].get_value()
+    update = dict(time=[t], real=[h4])
+    DataSource_tanque4.stream(new_data=update, rollover=50)  # Se ven los ultimos 100 datos
+    real_tanque4.text = 'Valor real: {}'.format(round(h4, 2))
+
+    t += 1
+
+
 l = layout([
     [fig_tanque3, fig_tanque4],
     [real_tanque3, real_tanque4],
     [fig_tanque1, fig_tanque2],
     [real_tanque1, real_tanque2]
 ])
-
-cliente = Cliente("opc.tcp://192.168.1.23:4840/freeopcua/server/", suscribir_eventos=True, SubHandler=SubHandler)
-cliente.conectar()
-# # cliente.subscribir_mv() # Se subscribe a las variables manipuladas
-# cliente.subscribir_cv()  # Se subscribe a las variables controladas
 
 curdoc().add_root(l)
 curdoc().title = "Mile-Lolo-Mathi"

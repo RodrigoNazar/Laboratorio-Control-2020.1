@@ -44,6 +44,7 @@ class SubHandler(object): # Clase debe estar en el script porque el thread que c
 cliente = Cliente("opc.tcp://192.168.1.23:4840/freeopcua/server/", suscribir_eventos=True, SubHandler=SubHandler)
 cliente.conectar()
 
+
 # Aplicación con Dash
 colors = {
     'background': '#111111',
