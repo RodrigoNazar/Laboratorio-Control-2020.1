@@ -100,20 +100,9 @@ def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostra
     global t
 
     h1 = cliente.alturas['H1'].get_value()
-    # update = dict(time=[t], ref=[32], real=[h1])
-    # DataSource_tanque1.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
-
     h2 = cliente.alturas['H2'].get_value()
-    # update = dict(time=[t], ref=[32], real=[h2])
-    # DataSource_tanque2.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
-
     h3 = cliente.alturas['H3'].get_value()
-    # update = dict(time=[t], real=[h3])
-    # DataSource_tanque3.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
-
     h4 = cliente.alturas['H4'].get_value()
-    # update = dict(time=[t], real=[h4])
-    # DataSource_tanque4.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
 
     v1 = cliente.valvulas['valvula1'].get_value()
     v2 = cliente.valvulas['valvula2'].get_value()
@@ -121,7 +110,7 @@ def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostra
     update = dict(time=[t], ref1=[32], real1=[h1], ref2=[32], real2=[h2],
                   real3=[h3], real4=[h4], vol1=[v1], vol2=[v2])
 
-    DataSource_tanques.stream(new_data=update, rollover=200)  # Se ven los ultimos 200 datos
+    DataSource_tanques.stream(new_data=update, rollover=200)
 
     t += 1
 
@@ -154,18 +143,35 @@ def textChanges(attr, old, new):
     '''
     Get excecuted when a text input changes
     '''
-    print('attr', attr)
-    print('old', old)
-    print('new', new)
+    kp = Kp.value
+    ki = Ki.value
+    kd = Kd.value
+
+    print(f'\nConstantes del pid:')
+    print('kp:', kp)
+    print('ki:', ki)
+    print('kd:', kd)
 
 
 def sliderChanges(attr, old, new):
     '''
     Get excecuted when the slide value is changed
     '''
-    print('attr', attr)
-    print('old', old)
-    print('new', new)
+    ref_est1 = refEst1.value
+    ref_est2 = refEst2.value
+    volV1 = voltageV1.value
+    volV2 = voltageV2.value
+    rFlujoV1 = razonFlujoV1.value
+    rFlujoV2 = razonFlujoV2.value
+
+    print(f'\nSliders:')
+    print('ref_est1:', ref_est1)
+    print('ref_est2:', ref_est2)
+    print('volV1:', volV1)
+    print('volV2:', volV2)
+    print('rFlujoV1:', rFlujoV1)
+    print('rFlujoV2:', rFlujoV2)
+
 
 
 def panelActive(attr, old, new):
