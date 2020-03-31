@@ -33,44 +33,63 @@ razonFlujoV2 = Slider(title="Razón de Flujo Válvula 2", value=0.0, start=0.0,
                       end=1.0, step=0.01)
 
 
-''' ******************** Added stuff ******************** '''
+''' ******************** Figures ******************** '''
 
 # DataSources
-DataSource_tanque1 = ColumnDataSource(dict(time=[], ref=[], real=[]))
-DataSource_tanque2 = ColumnDataSource(dict(time=[], ref=[], real=[]))
-DataSource_tanque3 = ColumnDataSource(dict(time=[], real=[]))
-DataSource_tanque4 = ColumnDataSource(dict(time=[], real=[]))
+DataSource_tanques = ColumnDataSource(dict(time=[], ref1=[], real1=[], ref2=[], real2=[], real3=[], real4=[], vol1=[], vol2=[]))
 
 # Figuras
 # Tanque 1
 fig_tanque1 = figure(title='Tanque 1', plot_width=600, plot_height=300, y_axis_location="left", y_range=(0, 70))
-fig_tanque1.line(x='time', y='ref', alpha=0.8, line_width=3, color='black', source=DataSource_tanque1, legend_label='Ref')
-fig_tanque1.line(x='time', y='real', alpha=0.8, line_width=3, color='red', source=DataSource_tanque1, legend_label='Real')
+l1t1 = fig_tanque1.line(x='time', y='ref1', alpha=0.8, line_width=3, color='black', source=DataSource_tanques,
+                        legend_label='Ref')
+l2t1 = fig_tanque1.line(x='time', y='real1', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
+                        legend_label='Real')
 fig_tanque1.xaxis.axis_label = 'Tiempo (S)'
 fig_tanque1.yaxis.axis_label = 'Valores'
 fig_tanque1.legend.location = "top_left"
 
 # Tanque 2
 fig_tanque2 = figure(title='Tanque 2', plot_width=600, plot_height=300, y_axis_location="left", y_range=(0, 70))
-fig_tanque2.line(x='time', y='ref', alpha=0.8, line_width=3, color='black', source=DataSource_tanque2, legend_label='Ref')
-fig_tanque2.line(x='time', y='real', alpha=0.8, line_width=3, color='red', source=DataSource_tanque2, legend_label='Real')
+l1t2 = fig_tanque2.line(x='time', y='ref2', alpha=0.8, line_width=3, color='black', source=DataSource_tanques,
+                        legend_label='Ref')
+l2t2 = fig_tanque2.line(x='time', y='real2', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
+                        legend_label='Real')
 fig_tanque2.xaxis.axis_label = 'Tiempo (S)'
 fig_tanque2.yaxis.axis_label = 'Valores'
 fig_tanque2.legend.location = "top_left"
 
 # Tanque 3
 fig_tanque3 = figure(title='Tanque 3', plot_width=600, plot_height=300, y_axis_location="left", y_range=(0, 70))
-fig_tanque3.line(x='time', y='real', alpha=0.8, line_width=3, color='red', source=DataSource_tanque3, legend_label='Real')
+l1t3 = fig_tanque3.line(x='time', y='real3', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
+                        legend_label='Real')
 fig_tanque3.xaxis.axis_label = 'Tiempo (S)'
 fig_tanque3.yaxis.axis_label = 'Valores'
 fig_tanque3.legend.location = "top_left"
 
 # Tanque 4
 fig_tanque4 = figure(title='Tanque 4', plot_width=600, plot_height=300, y_axis_location="left", y_range=(0, 70))
-fig_tanque4.line(x='time', y='real', alpha=0.8, line_width=3, color='red', source=DataSource_tanque4, legend_label='Real')
+l1t4 = fig_tanque4.line(x='time', y='real4', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
+                        legend_label='Real')
 fig_tanque4.xaxis.axis_label = 'Tiempo (S)'
 fig_tanque4.yaxis.axis_label = 'Valores'
 fig_tanque4.legend.location = "top_left"
+
+# Voltaje1
+fig_vol1 = figure(title='Voltaje 1', plot_width=600, plot_height=300, y_axis_location="left", y_range=(-5, 5))
+fig_vol1.line(x='time', y='vol1', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
+                        legend_label='Vol1')
+fig_vol1.xaxis.axis_label = 'Tiempo (S)'
+fig_vol1.yaxis.axis_label = '[V]'
+fig_vol1.legend.location = "top_left"
+
+# Voltaje2
+fig_vol2 = figure(title='Voltaje 2', plot_width=600, plot_height=300, y_axis_location="left", y_range=(-5, 5))
+fig_vol2.line(x='time', y='vol2', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
+                        legend_label='Vol2')
+fig_vol2.xaxis.axis_label = 'Tiempo (S)'
+fig_vol2.yaxis.axis_label = '[V]'
+fig_vol2.legend.location = "top_left"
 
 
 t = 0
@@ -81,28 +100,37 @@ def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostra
     global t
 
     h1 = cliente.alturas['H1'].get_value()
-    update = dict(time=[t], ref=[32], real=[h1])
-    DataSource_tanque1.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
+    # update = dict(time=[t], ref=[32], real=[h1])
+    # DataSource_tanque1.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
 
     h2 = cliente.alturas['H2'].get_value()
-    update = dict(time=[t], ref=[32], real=[h2])
-    DataSource_tanque2.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
+    # update = dict(time=[t], ref=[32], real=[h2])
+    # DataSource_tanque2.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
 
     h3 = cliente.alturas['H3'].get_value()
-    update = dict(time=[t], real=[h3])
-    DataSource_tanque3.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
+    # update = dict(time=[t], real=[h3])
+    # DataSource_tanque3.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
 
     h4 = cliente.alturas['H4'].get_value()
-    update = dict(time=[t], real=[h4])
-    DataSource_tanque4.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
+    # update = dict(time=[t], real=[h4])
+    # DataSource_tanque4.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
+
+    v1 = cliente.valvulas['valvula1'].get_value()
+    v2 = cliente.valvulas['valvula2'].get_value()
+
+    update = dict(time=[t], ref1=[32], real1=[h1], ref2=[32], real2=[h2],
+                  real3=[h3], real4=[h4], vol1=[v1], vol2=[v2])
+
+    DataSource_tanques.stream(new_data=update, rollover=200)  # Se ven los ultimos 200 datos
 
     t += 1
 
 
 layout = layout([
-   [fig_tanque3, fig_tanque4],
-   [fig_tanque1, fig_tanque2]
- ])
+    [fig_tanque3, fig_tanque4],
+    [fig_tanque1, fig_tanque2],
+    [fig_vol1, fig_vol2]
+])
 
 
 panel1 = Panel(child=row(Column(label1, refEst1, refEst2, Kp, Ki, Kd), layout,
