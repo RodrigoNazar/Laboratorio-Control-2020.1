@@ -7,7 +7,7 @@ from cliente_control import Cliente
 from collections import deque
 
 # DataSources
-DataSource_tanques = ColumnDataSource(dict(time=[], ref1=[], real1=[], ref2=[], real2=[], real3=[], real4=[]))
+DataSource_tanques = ColumnDataSource(dict(time=[], ref1=[], real1=[], ref2=[], real2=[], real3=[], real4=[], vol1=[], vol2=[]))
 
 # Figuras
 # Tanque 1
@@ -31,7 +31,7 @@ fig_tanque2.yaxis.axis_label = 'Valores'
 fig_tanque2.legend.location = "top_left"
 
 # Tanque 3
-fig_tanque3 = figure(title='Tanque 2', plot_width=600, plot_height=300, y_axis_location="left", y_range=(0, 70))
+fig_tanque3 = figure(title='Tanque 3', plot_width=600, plot_height=300, y_axis_location="left", y_range=(0, 70))
 l1t3 = fig_tanque3.line(x='time', y='real3', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
                         legend='Real')
 fig_tanque3.xaxis.axis_label = 'Tiempo (S)'
@@ -39,27 +39,29 @@ fig_tanque3.yaxis.axis_label = 'Valores'
 fig_tanque3.legend.location = "top_left"
 
 # Tanque 4
-fig_tanque4 = figure(title='Tanque 2', plot_width=600, plot_height=300, y_axis_location="left", y_range=(0, 70))
+fig_tanque4 = figure(title='Tanque 4', plot_width=600, plot_height=300, y_axis_location="left", y_range=(0, 70))
 l1t4 = fig_tanque4.line(x='time', y='real4', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
                         legend='Real')
 fig_tanque4.xaxis.axis_label = 'Tiempo (S)'
 fig_tanque4.yaxis.axis_label = 'Valores'
 fig_tanque4.legend.location = "top_left"
 
-# Widgets para desplegar valores
-estilo1 = {'color': 'white', 'font': '15px bold arial, sans-serif', 'background-color': 'black', 'text-align': 'center',
-           'border-radius': '7px'}
-estilo2 = {'color': 'white', 'font': '15px bold arial, sans-serif', 'background-color': 'red', 'text-align': 'center',
-           'border-radius': '7px'}
-# ref_tanque1 = PreText(text='Valor de referencia: 0.00 ', width=300, style=estilo1)
-real_tanque1 = PreText(text='Valor real: 0.00', width=600, style=estilo2)
+# Voltaje1
+fig_vol1 = figure(title='Voltaje 1', plot_width=600, plot_height=300, y_axis_location="left", y_range=(-5, 5))
+fig_vol1.line(x='time', y='vol1', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
+                        legend='Vol1')
+fig_vol1.xaxis.axis_label = 'Tiempo (S)'
+fig_vol1.yaxis.axis_label = '[V]'
+fig_vol1.legend.location = "top_left"
 
-# ref_tanque2 = PreText(text='Valor de referencia: 0.00 ', width=300, style=estilo1)
-real_tanque2 = PreText(text='Valor real: 0.00', width=600, style=estilo2)
+# Voltaje2
+fig_vol2 = figure(title='Voltaje 2', plot_width=600, plot_height=300, y_axis_location="left", y_range=(-5, 5))
+fig_vol2.line(x='time', y='vol2', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
+                        legend='Vol2')
+fig_vol2.xaxis.axis_label = 'Tiempo (S)'
+fig_vol2.yaxis.axis_label = '[V]'
+fig_vol2.legend.location = "top_left"
 
-real_tanque3 = PreText(text='Valor real: 0.00', width=600, style=estilo2)
-
-real_tanque4 = PreText(text='Valor real: 0.00', width=600, style=estilo2)
 
 
 def funcion_handler(node, val):
@@ -97,34 +99,19 @@ def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostra
     h2 = cliente.alturas['H2'].get_value()
     h3 = cliente.alturas['H3'].get_value()
     h4 = cliente.alturas['H4'].get_value()
+    v1 = cliente.valvulas['valvula1'].get_value()
+    v2 = cliente.valvulas['valvula2'].get_value()
 
     update = dict(time=[t], ref1=[50 * np.random.random()], real1=[h1],
-                  ref2=[50 * np.random.random()], real2=[h2], real3=[h3], real4=[h4])
-
-    DataSource_tanques.stream(new_data=update, rollover=20)  # Se ven los ultimos 50 datos
-    # real_tanque1.text = 'Valor real: {}'.format(round(h1, 2))
-    # real_tanque2.text = 'Valor real: {}'.format(round(h2, 2))
-    # real_tanque3.text = 'Valor real: {}'.format(round(h3, 2))
-    # real_tanque4.text = 'Valor real: {}'.format(round(h4, 2))
-    #
-    # h3 = cliente.alturas['H3'].get_value()
-    # update = dict(time=[t], real=[h3])
-    # DataSource_tanque3.stream(new_data=update, rollover=50)  # Se ven los ultimos 100 datos
-    # real_tanque3.text = 'Valor real: {}'.format(round(h3, 2))
-    #
-    # h4 = cliente.alturas['H4'].get_value()
-    # update = dict(time=[t], real=[h4])
-    # DataSource_tanque4.stream(new_data=update, rollover=50)  # Se ven los ultimos 100 datos
-    # real_tanque4.text = 'Valor real: {}'.format(round(h4, 2))
-
+                  ref2=[50 * np.random.random()], real2=[h2], real3=[h3], real4=[h4], vol1=[v1], vol2=[v2])
+    DataSource_tanques.stream(new_data=update, rollover=200)  # Se ven los ultimos 200 datos
     t += 1
 
 
 l = layout([
     [fig_tanque3, fig_tanque4],
-    [real_tanque3, real_tanque4],
     [fig_tanque1, fig_tanque2],
-    [real_tanque1, real_tanque2]
+    [fig_vol1, fig_vol2]
 ])
 
 curdoc().add_root(l)
