@@ -11,8 +11,10 @@ import threading
 
 ''' ******************** Modo Automático ******************** '''
 label1 = Div(text='<h1>Modo Automático</h1>')
-ref = Slider(title="Altura de Referencia", value=0.0, start=0.0, end=50.0,
-                   step=0.1)
+refEst1 = Slider(title="Altura de Referencia Estanque 1", value=0.0, start=0.0,
+             end=50.0, step=0.1)
+refEst2 = Slider(title="Altura de Referencia Estanque 2", value=0.0, start=0.0,
+             end=50.0, step=0.1)
 
 Kp = TextInput(title="Constante Proporcional", value='0')
 Ki = TextInput(title="Constante Integral", value='0')
@@ -21,10 +23,14 @@ Kd = TextInput(title="Constante Derivativa", value='0')
 
 ''' ******************** Modo Manual ******************** '''
 label2 = Div(text='<h1>Modo Manual</h1>')
-voltageV1 = Slider(title="Voltaje Válvula 1", value=0.0, start=-1.0, end=1.0,
+voltageV1 = Slider(title="Voltaje Válvula 1", value=0.0, start=-5.0, end=5.0,
                    step=0.01)
-voltageV2 = Slider(title="Voltaje Válvula 2", value=0.0, start=-1.0, end=1.0,
+voltageV2 = Slider(title="Voltaje Válvula 2", value=0.0, start=-5.0, end=5.0,
                    step=0.01)
+razonFlujoV1 = Slider(title="Razón de Flujo Válvula 1", value=0.0, start=0.0,
+                      end=1.0, step=0.01)
+razonFlujoV2 = Slider(title="Razón de Flujo Válvula 2", value=0.0, start=0.0,
+                      end=1.0, step=0.01)
 
 
 ''' ******************** Added stuff ******************** '''
@@ -76,19 +82,19 @@ def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostra
 
     h1 = cliente.alturas['H1'].get_value()
     update = dict(time=[t], ref=[32], real=[h1])
-    DataSource_tanque1.stream(new_data=update, rollover=50)  # Se ven los ultimos 100 datos
+    DataSource_tanque1.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
 
     h2 = cliente.alturas['H2'].get_value()
     update = dict(time=[t], ref=[32], real=[h2])
-    DataSource_tanque2.stream(new_data=update, rollover=50)  # Se ven los ultimos 100 datos
+    DataSource_tanque2.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
 
     h3 = cliente.alturas['H3'].get_value()
     update = dict(time=[t], real=[h3])
-    DataSource_tanque3.stream(new_data=update, rollover=50)  # Se ven los ultimos 100 datos
+    DataSource_tanque3.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
 
     h4 = cliente.alturas['H4'].get_value()
     update = dict(time=[t], real=[h4])
-    DataSource_tanque4.stream(new_data=update, rollover=50)  # Se ven los ultimos 100 datos
+    DataSource_tanque4.stream(new_data=update, rollover=50)  # Se ven los ultimos 50 datos
 
     t += 1
 
@@ -99,9 +105,10 @@ layout = layout([
  ])
 
 
-panel1 = Panel(child=row(Column(label1, ref, Kp, Ki, Kd), layout,
+panel1 = Panel(child=row(Column(label1, refEst1, refEst2, Kp, Ki, Kd), layout,
                sizing_mode='fixed'), title='Modo Automático')
-panel2 = Panel(child=Column(label2, voltageV1, voltageV2), title='Modo Manual')
+panel2 = Panel(child=row(Column(label2, voltageV1, voltageV2, razonFlujoV1,
+               razonFlujoV2), layout, sizing_mode='fixed'), title='Modo Manual')
 
 # Tabs
 tabs = Tabs(tabs=[panel1, panel2])
@@ -111,7 +118,8 @@ tabs = Tabs(tabs=[panel1, panel2])
 
 textInputs = [Kp, Ki, Kd]
 
-sliderInputs = [ref, voltageV1, voltageV2]
+sliderInputs = [refEst1, refEst2, voltageV1, voltageV2, razonFlujoV1,
+                razonFlujoV2]
 
 
 def textChanges(attr, old, new):
