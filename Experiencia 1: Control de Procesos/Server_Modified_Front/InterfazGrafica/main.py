@@ -5,6 +5,9 @@ from bokeh.models import (Div, Tabs, Panel, Slider, Column, TextInput, PreText,
 from bokeh.plotting import curdoc, figure
 from bokeh.layouts import layout, row
 
+from cliente_control import Cliente
+import threading
+
 
 ''' ******************** Modo Automático ******************** '''
 label1 = Div(text='<h1>Modo Automático</h1>')
@@ -26,54 +29,78 @@ voltageV2 = Slider(title="Voltaje Válvula 2", value=0.0, start=-1.0, end=1.0,
 
 ''' ******************** Added stuff ******************** '''
 
-# Se crea un seno
-T = np.linspace(0, 1000, 1001)
-sin = np.sin(T)
-cos = np.cos(T)
+# DataSources
+DataSource_tanque1 = ColumnDataSource(dict(time=[], ref=[], real=[]))
+DataSource_tanque2 = ColumnDataSource(dict(time=[], ref=[], real=[]))
+DataSource_tanque3 = ColumnDataSource(dict(time=[], real=[]))
+DataSource_tanque4 = ColumnDataSource(dict(time=[], real=[]))
 
-# Se crea el DataSource
-DataSource = ColumnDataSource({'time': [], 'sin': [], 'cos': []})
+# Figuras
+# Tanque 1
+fig_tanque1 = figure(title='Tanque 1', plot_width=600, plot_height=300, y_axis_location="left", y_range=(0, 70))
+fig_tanque1.line(x='time', y='ref', alpha=0.8, line_width=3, color='black', source=DataSource_tanque1, legend_label='Ref')
+fig_tanque1.line(x='time', y='real', alpha=0.8, line_width=3, color='red', source=DataSource_tanque1, legend_label='Real')
+fig_tanque1.xaxis.axis_label = 'Tiempo (S)'
+fig_tanque1.yaxis.axis_label = 'Valores'
+fig_tanque1.legend.location = "top_left"
 
-# Figura
-fig_sin = figure(title='Seno y Coseno', plot_width=600, plot_height=200,
-                 tools="reset,xpan,xwheel_zoom,xbox_zoom",
-                 y_axis_location="left")
-fig_sin.line(x='time', y='sin', alpha=0.8, line_width=3, color='blue',
-             source=DataSource, legend_label='Seno')
-fig_sin.line(x='time', y='cos', alpha=0.8, line_width=3, color='red',
-             source=DataSource, legend_label='Coseno')
-fig_sin.xaxis.axis_label = 'Tiempo (S)'
-fig_sin.yaxis.axis_label = 'Valores'
+# Tanque 2
+fig_tanque2 = figure(title='Tanque 2', plot_width=600, plot_height=300, y_axis_location="left", y_range=(0, 70))
+fig_tanque2.line(x='time', y='ref', alpha=0.8, line_width=3, color='black', source=DataSource_tanque2, legend_label='Ref')
+fig_tanque2.line(x='time', y='real', alpha=0.8, line_width=3, color='red', source=DataSource_tanque2, legend_label='Real')
+fig_tanque2.xaxis.axis_label = 'Tiempo (S)'
+fig_tanque2.yaxis.axis_label = 'Valores'
+fig_tanque2.legend.location = "top_left"
 
-# Se crea un par de Widgets
-estilo = {'color': 'white', 'font': '15px bold arial, sans-serif',
-          'background-color': 'green', 'text-align': 'center',
-          'border-radius': '7px'}
-SinText = PreText(text='Valor del Seno: 0.00 ', width=300, style=estilo)
-CosText = PreText(text='Valor del Coseno: 0.00', width=300, style=estilo)
+# Tanque 3
+fig_tanque3 = figure(title='Tanque 3', plot_width=600, plot_height=300, y_axis_location="left", y_range=(0, 70))
+fig_tanque3.line(x='time', y='real', alpha=0.8, line_width=3, color='red', source=DataSource_tanque3, legend_label='Real')
+fig_tanque3.xaxis.axis_label = 'Tiempo (S)'
+fig_tanque3.yaxis.axis_label = 'Valores'
+fig_tanque3.legend.location = "top_left"
+
+# Tanque 4
+fig_tanque4 = figure(title='Tanque 4', plot_width=600, plot_height=300, y_axis_location="left", y_range=(0, 70))
+fig_tanque4.line(x='time', y='real', alpha=0.8, line_width=3, color='red', source=DataSource_tanque4, legend_label='Real')
+fig_tanque4.xaxis.axis_label = 'Tiempo (S)'
+fig_tanque4.yaxis.axis_label = 'Valores'
+fig_tanque4.legend.location = "top_left"
+
 
 t = 0
 
 
 # Funcion principal que se llama cada cierto tiempo para mostrar la informacion
-def MainLoop():
-    global t, sin, cos
-    update = dict(time=[t], sin=[sin[t]], cos=[cos[t]])
-    # Se ven los ultimos 100 datos
-    DataSource.stream(new_data=update, rollover=100)
-    SinText.text = 'Valor del Seno: {}'.format(round(sin[t], 2))
-    CosText.text = 'Valor del Coseno: {}'.format(round(cos[t], 2))
+def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostrar la informacion
+    global t
+
+    h1 = cliente.alturas['H1'].get_value()
+    update = dict(time=[t], ref=[32], real=[h1])
+    DataSource_tanque1.stream(new_data=update, rollover=50)  # Se ven los ultimos 100 datos
+
+    h2 = cliente.alturas['H2'].get_value()
+    update = dict(time=[t], ref=[32], real=[h2])
+    DataSource_tanque2.stream(new_data=update, rollover=50)  # Se ven los ultimos 100 datos
+
+    h3 = cliente.alturas['H3'].get_value()
+    update = dict(time=[t], real=[h3])
+    DataSource_tanque3.stream(new_data=update, rollover=50)  # Se ven los ultimos 100 datos
+
+    h4 = cliente.alturas['H4'].get_value()
+    update = dict(time=[t], real=[h4])
+    DataSource_tanque4.stream(new_data=update, rollover=50)  # Se ven los ultimos 100 datos
+
     t += 1
 
 
 layout = layout([
-   [fig_sin],
-   [SinText, CosText]
-   ])
+   [fig_tanque3, fig_tanque4],
+   [fig_tanque1, fig_tanque2]
+ ])
 
 
 panel1 = Panel(child=row(Column(label1, ref, Kp, Ki, Kd), layout,
-               sizing_mode='scale_both'), title='Modo Automático')
+               sizing_mode='fixed'), title='Modo Automático')
 panel2 = Panel(child=Column(label2, voltageV1, voltageV2), title='Modo Manual')
 
 # Tabs
@@ -125,6 +152,39 @@ for slider in sliderInputs:
 
 tabs.on_change('active', panelActive)
 
+
+''' ******************** Client ******************** '''
+
+def funcion_handler(node, val):
+    key = node.get_parent().get_display_name().Text
+    if key == 'Tanque1':
+        lolito = val
+
+
+class SubHandler(object):
+    """
+    Subscription Handler. To receive events from server for a subscription
+    data_change and event methods are called directly from receiving thread.
+    Do not do expensive, slow or network operation there. Create another
+    thread if you need to do such a thing
+    """
+
+    def datachange_notification(self, node, val, data):
+        thread_handler = threading.Thread(target=funcion_handler,
+                                          args=(node, val))  # Se realiza la descarga por un thread
+        thread_handler.start()
+
+    def event_notification(self, event):
+        print("Python: New event", event)
+
+
+cliente = Cliente("opc.tcp://127.0.0.1:4840/freeopcua/server/", suscribir_eventos=True, SubHandler=SubHandler)
+cliente.conectar()
+
+# cliente.subscribir_mv() # Se subscribe a las variables manipuladas
+# cliente.subscribir_cv() # Se subscribe a las variables controladas
+
+
 curdoc().add_root(tabs)
 curdoc().title = 'Experiencia 1: Control de Procesos'
-curdoc().add_periodic_callback(MainLoop, 100)
+curdoc().add_periodic_callback(MainLoop, 150)
