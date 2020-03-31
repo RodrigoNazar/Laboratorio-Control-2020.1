@@ -130,3 +130,5 @@ dmypy.json
 
 # NEW STUFF START HERE
 .DS_Store
+*.sql
+*.sql-journal
