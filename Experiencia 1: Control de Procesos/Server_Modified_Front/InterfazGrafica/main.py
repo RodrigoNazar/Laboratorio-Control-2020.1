@@ -32,6 +32,10 @@ razonFlujoV1 = Slider(title="Razón de Flujo Válvula 1", value=0.0, start=0.0,
 razonFlujoV2 = Slider(title="Razón de Flujo Válvula 2", value=0.0, start=0.0,
                       end=1.0, step=0.01)
 
+''' ******************** Alarmas ******************** '''
+
+alarm = Div(text='<div class="container"><h2>¡ALARMA!</h2><img src="InterfazGrafica/static/alarm.png"></div>')
+alarm.visible = False
 
 ''' ******************** Figures ******************** '''
 
@@ -122,10 +126,9 @@ layout = layout([
 ])
 
 
-panel1 = Panel(child=row(Column(label1, refEst1, refEst2, Kp, Ki, Kd), layout,
-               sizing_mode='fixed'), title='Modo Automático')
+panel1 = Panel(child=row(Column(label1, refEst1, refEst2, Kp, Ki, Kd, alarm), layout), title='Modo Automático')
 panel2 = Panel(child=row(Column(label2, voltageV1, voltageV2, razonFlujoV1,
-               razonFlujoV2), layout, sizing_mode='fixed'), title='Modo Manual')
+               razonFlujoV2), layout), title='Modo Manual')
 
 # Tabs
 tabs = Tabs(tabs=[panel1, panel2])
@@ -163,6 +166,8 @@ def sliderChanges(attr, old, new):
     volV2 = voltageV2.value
     rFlujoV1 = razonFlujoV1.value
     rFlujoV2 = razonFlujoV2.value
+
+    alarm.visible = not alarm.visible
 
     print(f'\nSliders:')
     print('ref_est1:', ref_est1)
