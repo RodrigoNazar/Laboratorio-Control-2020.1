@@ -1,5 +1,4 @@
 import numpy as np
-
 from bokeh.models import (Div, Tabs, Panel, Slider, Column, TextInput, PreText,
                           ColumnDataSource)
 from bokeh.plotting import curdoc, figure
@@ -9,7 +8,6 @@ from cliente_control import Cliente
 import threading
 
 ''' ******************** Client ******************** '''
-
 
 def funcion_handler(node, val):
     key = node.get_parent().get_display_name().Text
@@ -37,13 +35,21 @@ class SubHandler(object):
 cliente = Cliente("opc.tcp://127.0.0.1:4840/freeopcua/server/", suscribir_eventos=True, SubHandler=SubHandler)
 cliente.conectar()
 
-'''************************ Valores iniciales ***************'''
+'''************************ Valores iniciales y variables globales ***************'''
 ref1 = 40
 ref2 = 40
 vol1 = cliente.valvulas['valvula1'].get_value()
 vol2 = cliente.valvulas['valvula2'].get_value()
 gamma1 = cliente.razones['razon1'].get_value()
 gamma2 = cliente.razones['razon2'].get_value()
+
+t = 0
+automatico = True
+
+''' ******************** Alarmas ******************** '''
+
+alarm = Div(text='<div class="container"><h2>¡ALARMA!</h2></div>')
+alarm.visible = False
 
 ''' ******************** Modo Automático ******************** '''
 label1 = Div(text='<h1>Modo Automático</h1>')
@@ -52,15 +58,19 @@ refEst1 = Slider(title="Altura de Referencia Estanque 1", value=ref1, start=0.0,
 refEst2 = Slider(title="Altura de Referencia Estanque 2", value=ref2, start=0.0,
                  end=50.0, step=0.1)
 
-Kp = TextInput(title="Constante Proporcional", value='0')
-Ki = TextInput(title="Constante Integral", value='0')
-Kd = TextInput(title="Constante Derivativa", value='0')
+Kp1 = TextInput(title="Constante Proporcional V1", value='0')
+Ki1 = TextInput(title="Constante Integral V1", value='0')
+Kd1 = TextInput(title="Constante Derivativa V1", value='0')
+
+Kp2 = TextInput(title="Constante Proporcional V2", value='0')
+Ki2 = TextInput(title="Constante Integral V2", value='0')
+Kd2 = TextInput(title="Constante Derivativa V2", value='0')
 
 ''' ******************** Modo Manual ******************** '''
 label2 = Div(text='<h1>Modo Manual</h1>')
-voltageV1 = Slider(title="Voltaje Válvula 1", value=vol1, start=-0.99, end=0.99,
+voltageV1 = Slider(title="Voltaje Válvula 1", value=vol1, start=-1, end=1,
                    step=0.01)
-voltageV2 = Slider(title="Voltaje Válvula 2", value=vol2, start=-0.99, end=0.99,
+voltageV2 = Slider(title="Voltaje Válvula 2", value=vol2, start=-1, end=1,
                    step=0.01)
 razonFlujoV1 = Slider(title="Razón de Flujo Válvula 1", value=gamma1, start=0.01,
                       end=0.99, step=0.01)
@@ -126,12 +136,10 @@ fig_vol2.xaxis.axis_label = 'Tiempo (S)'
 fig_vol2.yaxis.axis_label = '[V]'
 fig_vol2.legend.location = "top_left"
 
-t = 0
-
 
 # Funcion principal que se llama cada cierto tiempo para mostrar la informacion
 def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostrar la informacion
-    global t
+    global t, ref1, ref2, automatico
 
     h1 = cliente.alturas['H1'].get_value()
     h2 = cliente.alturas['H2'].get_value()
@@ -141,7 +149,14 @@ def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostra
     v1 = cliente.valvulas['valvula1'].get_value()
     v2 = cliente.valvulas['valvula2'].get_value()
 
-    update = dict(time=[t], ref1=[32], real1=[h1], ref2=[32], real2=[h2],
+    if automatico:
+        ref11 = ref1
+        ref22 = ref2
+    else:
+        ref11 = -1
+        ref22 = -1
+
+    update = dict(time=[t], ref1=[ref11], real1=[h1], ref2=[ref22], real2=[h2],
                   real3=[h3], real4=[h4], vol1=[v1], vol2=[v2])
 
     DataSource_tanques.stream(new_data=update, rollover=200)
@@ -155,91 +170,95 @@ layout = layout([
     [fig_vol1, fig_vol2]
 ])
 
-panel1 = Panel(child=row(Column(label1, refEst1, refEst2, Kp, Ki, Kd), layout,
+panel1 = Panel(child=row(Column(label1, refEst1, refEst2, alarm, Kp1, Ki1, Kd1, Kp2, Ki2, Kd2), layout,
                          sizing_mode='fixed'), title='Modo Automático')
 panel2 = Panel(child=row(Column(label2, voltageV1, voltageV2, razonFlujoV1,
-                                razonFlujoV2), layout, sizing_mode='fixed'), title='Modo Manual')
+                                razonFlujoV2, alarm), layout, sizing_mode='fixed'), title='Modo Manual')
 
 # Tabs
 tabs = Tabs(tabs=[panel1, panel2])
 
 ''' ******************** Events functions ******************** '''
 
-textInputs = [Kp, Ki, Kd]
-
-sliderInputs = [refEst1, refEst2, voltageV1, voltageV2, razonFlujoV1,
-                razonFlujoV2]
+textInputs = [Kp1, Ki1, Kd1, Kp2, Ki2, Kd2]
 
 
 def textChanges(attr, old, new):
     '''
     Get excecuted when a text input changes
     '''
-    kp = Kp.value
-    ki = Ki.value
-    kd = Kd.value
+    kp1 = Kp1.value
+    ki1 = Ki1.value
+    kd1 = Kd1.value
 
     print(f'\nConstantes del pid:')
-    print('kp:', kp)
-    print('ki:', ki)
-    print('kd:', kd)
+    print('kp:', kp1)
+    print('ki:', ki1)
+    print('kd:', kd1)
 
 
 def slider_changes_ref1(attr, old, new):
     global ref1
     ref1 = new
+
+
 refEst1.on_change('value', slider_changes_ref1)
 
 
 def slider_changes_ref2(attr, old, new):
     global ref2
     ref2 = new
+    alarm.visible = not alarm.visible
+
+
 refEst2.on_change('value', slider_changes_ref2)
 
 
 def slider_changes_voltaje1(attr, old, new):
     cliente.valvulas['valvula1'].set_value(new)
-    print('vol1 cambio')
+    alarm.visible = not alarm.visible
 
-voltageV1.on_change('value',slider_changes_voltaje1)
+
+voltageV1.on_change('value', slider_changes_voltaje1)
 
 
 def slider_changes_voltaje2(attr, old, new):
     cliente.valvulas['valvula2'].set_value(new)
-    print('vol2 cambio')
+
 
 voltageV2.on_change('value', slider_changes_voltaje2)
 
 
 def slider_changes_razon1(attr, old, new):
     cliente.razones['razon1'].set_value(new)
-    print('razon1 cambio')
+
 
 razonFlujoV1.on_change('value', slider_changes_razon1)
 
 
 def slider_changes_razon2(attr, old, new):
     cliente.razones['razon2'].set_value(new)
-    print('razon2 cambio')
+
+
 razonFlujoV2.on_change('value', slider_changes_razon2)
 
 
 def panelActive(attr, old, new):
+    global automatico
     '''
     Get excecuted when the other tab is selected
     Changes the operation mode if a tab is changed
     '''
     if tabs.active == 0:
-        print('Modo automático activado')
-
+        automatico = True
     elif tabs.active == 1:
-        print('Modo manual activado')
+        automatico = False
 
+
+tabs.on_change('active', panelActive)
 
 for text in textInputs:
     text.on_change('value', textChanges)
-
-tabs.on_change('active', panelActive)
 
 curdoc().add_root(tabs)
 curdoc().title = 'Experiencia 1: Control de Procesos'
