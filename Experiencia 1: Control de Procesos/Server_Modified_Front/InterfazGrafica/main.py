@@ -63,26 +63,28 @@ alarm.visible = False
 ''' ******************** Modo Automático ******************** '''
 
 label1 = Div(text='<h1>Modo Automático</h1>')
-refEst1 = Slider(title="Altura de Referencia Estanque 1", value=0.0, start=0.0,
+refEst1 = Slider(title="Altura de Referencia Estanque 1", value=40, start=0.0,
              end=50.0, step=0.1)
-refEst2 = Slider(title="Altura de Referencia Estanque 2", value=0.0, start=0.0,
+refEst2 = Slider(title="Altura de Referencia Estanque 2", value=40, start=0.0,
              end=50.0, step=0.1)
 
-Kp1 = TextInput(title="Constante Proporcional V1", value='0')
-Ki1 = TextInput(title="Constante Integral V1", value='0')
-Kd1 = TextInput(title="Constante Derivativa V1", value='0')
+valvula1Label = Div(text='<h3>Válvula 1</h3>')
+Kp1 = TextInput(title="Constante Proporcional", value='0')
+Ki1 = TextInput(title="Constante Integral", value='0')
+Kd1 = TextInput(title="Constante Derivativa", value='0')
 
-Kp2 = TextInput(title="Constante Proporcional V2", value='0')
-Ki2 = TextInput(title="Constante Integral V2", value='0')
-Kd2 = TextInput(title="Constante Derivativa V2", value='0')
+valvula2Label = Div(text='<h3>Válvula 2</h3>')
+Kp2 = TextInput(title="Constante Proporcional", value='0')
+Ki2 = TextInput(title="Constante Integral", value='0')
+Kd2 = TextInput(title="Constante Derivativa", value='0')
 
 
 ''' ******************** Modo Manual ******************** '''
 
 label2 = Div(text='<h1>Modo Manual</h1>')
-voltageV1 = Slider(title="Voltaje Válvula 1", value=0.0, start=-5.0, end=5.0,
+voltageV1 = Slider(title="Voltaje Válvula 1", value=vol1, start=-5.0, end=5.0,
                    step=0.01)
-voltageV2 = Slider(title="Voltaje Válvula 2", value=0.0, start=-5.0, end=5.0,
+voltageV2 = Slider(title="Voltaje Válvula 2", value=vol2, start=-5.0, end=5.0,
                    step=0.01)
 razonFlujoV1 = Slider(title="Razón de Flujo Válvula 1", value=0.0, start=0.0,
                       end=0.99, step=0.01)
@@ -186,8 +188,9 @@ layout = layout([
 ])
 
 
-panel1 = Panel(child=row(Column(label1, refEst1, refEst2, Kp1, Ki1, Kd1, Kp2,
-                Ki2, Kd2, alarm), layout), title='Modo Automático')
+panel1 = Panel(child=row(Column(label1, refEst1, refEst2, row(Column(valvula1Label, Kp1,
+                Ki1, Kd1), Column(valvula2Label, Kp2, Ki2, Kd2)), alarm),
+                layout), title='Modo Automático')
 panel2 = Panel(child=row(Column(label2, voltageV1, voltageV2, razonFlujoV1,
                razonFlujoV2, alarm), layout), title='Modo Manual')
 
