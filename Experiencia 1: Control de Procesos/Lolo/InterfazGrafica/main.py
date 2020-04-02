@@ -1,7 +1,7 @@
 import numpy as np
 
 from bokeh.models import (Div, Tabs, Panel, Slider, Column, TextInput, PreText,
-                          ColumnDataSource)
+                          ColumnDataSource, Button, Select)
 from bokeh.plotting import curdoc, figure
 from bokeh.layouts import layout, row
 
@@ -54,26 +54,33 @@ t = 0
 automatico = True
 
 
-''' ******************** Alarmas ******************** '''
+''' ******************** Alarmas y botones ******************** '''
 
 alarm = Div(text='<div class="container"><h2>¡ALARMA!</h2><img src="InterfazGrafica/static/alarm.png"></div>')
 alarm.visible = False
 
+dataRecordingButton = Button(label="Comenzar a adquirir datos", button_type="success")
+dataRecordingLabel = Div(text='<p>Adquiriendo datos...</p>')
+dataRecordingLabel.visible = False
+
+# saveDataButton = Button(label="Guardar datos", button_type="success")
+extensionsSelect = Select(title="Guardar los datos con extensión:", options=['csv', 'txt', 'npy'])
+
 
 ''' ******************** Modo Automático ******************** '''
 
-label1 = Div(text='<h1>Modo Automático</h1>')
+label1 = Div(text='<h1>Modo Automático &#9889;</h1><hr>')
 refEst1 = Slider(title="Altura de Referencia Estanque 1", value=40, start=0.0,
              end=50.0, step=0.1)
 refEst2 = Slider(title="Altura de Referencia Estanque 2", value=40, start=0.0,
              end=50.0, step=0.1)
 
-valvula1Label = Div(text='<h3>Válvula 1</h3>')
+valvula1Label = Div(text='<h3>Válvula 1</h3><hr>')
 Kp1 = TextInput(title="Constante Proporcional", value='0')
 Ki1 = TextInput(title="Constante Integral", value='0')
 Kd1 = TextInput(title="Constante Derivativa", value='0')
 
-valvula2Label = Div(text='<h3>Válvula 2</h3>')
+valvula2Label = Div(text='<h3>Válvula 2</h3><hr>')
 Kp2 = TextInput(title="Constante Proporcional", value='0')
 Ki2 = TextInput(title="Constante Integral", value='0')
 Kd2 = TextInput(title="Constante Derivativa", value='0')
@@ -81,7 +88,7 @@ Kd2 = TextInput(title="Constante Derivativa", value='0')
 
 ''' ******************** Modo Manual ******************** '''
 
-label2 = Div(text='<h1>Modo Manual</h1>')
+label2 = Div(text='<h1>Modo Manual &#9997;</h1><hr>')
 voltageV1 = Slider(title="Voltaje Válvula 1", value=vol1, start=-5.0, end=5.0,
                    step=0.01)
 voltageV2 = Slider(title="Voltaje Válvula 2", value=vol2, start=-5.0, end=5.0,
@@ -188,11 +195,11 @@ layout = layout([
 ])
 
 
-panel1 = Panel(child=row(Column(label1, refEst1, refEst2, row(Column(valvula1Label, Kp1,
+panel1 = Panel(child=row(Column(label1, row(Column(dataRecordingButton, dataRecordingLabel), Column(extensionsSelect)), refEst1, refEst2, row(Column(valvula1Label, Kp1,
                 Ki1, Kd1), Column(valvula2Label, Kp2, Ki2, Kd2)), alarm),
                 layout), title='Modo Automático')
-panel2 = Panel(child=row(Column(label2, voltageV1, voltageV2, razonFlujoV1,
-               razonFlujoV2, alarm), layout), title='Modo Manual')
+panel2 = Panel(child=row(Column(label2, dataRecordingButton, dataRecordingLabel, row(Column(valvula1Label, voltageV1, razonFlujoV1),
+               Column(valvula2Label, voltageV2, razonFlujoV2)), alarm), layout), title='Modo Manual')
 
 # Tabs
 tabs = Tabs(tabs=[panel1, panel2])
@@ -261,6 +268,30 @@ def slider_changes_razon2(attr, old, new):
 razonFlujoV2.on_change('value', slider_changes_razon2)
 
 
+# Button
+def recordingButtonClicked():
+    # We were recording the data
+    if dataRecordingLabel.visible:
+        dataRecordingButton.button_type = 'success'
+        dataRecordingButton.label = 'Comenzar a adquirir datos'
+
+    else:
+        dataRecordingButton.button_type = 'danger'
+        dataRecordingButton.label = 'Dejar de adquirir datos'
+
+    dataRecordingLabel.visible = not dataRecordingLabel.visible
+
+dataRecordingButton.on_click(recordingButtonClicked)
+
+
+# Dropdown
+def extensionsSelectClicked(attrname, old, new):
+    print(old, new)
+
+extensionsSelect.on_change('value', extensionsSelect)
+
+
+# Tabs
 def panelActive(attr, old, new):
     '''
     Get excecuted when the other tab is selected
