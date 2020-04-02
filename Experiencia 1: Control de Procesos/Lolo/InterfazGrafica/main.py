@@ -1,7 +1,8 @@
 import numpy as np
 
 from bokeh.models import (Div, Tabs, Panel, Slider, Column, TextInput, PreText,
-                          ColumnDataSource, Button, Select)
+                          ColumnDataSource, Button, Select, Dropdown)
+from bokeh.events import MenuItemClick
 from bokeh.plotting import curdoc, figure
 from bokeh.layouts import layout, row
 
@@ -63,8 +64,8 @@ dataRecordingButton = Button(label="Comenzar a adquirir datos", button_type="suc
 dataRecordingLabel = Div(text='<p>Adquiriendo datos...</p>')
 dataRecordingLabel.visible = False
 
-# saveDataButton = Button(label="Guardar datos", button_type="success")
-extensionsSelect = Select(title="Guardar los datos con extensión:", options=['csv', 'txt', 'npy'])
+extensionsMenu = [("csv", "csv"), ("txt", "txt"), ("npy", "npy")]
+extensionsDropdown = Dropdown(label="Guardar los datos con extensión:", button_type="success", menu=extensionsMenu)
 
 
 ''' ******************** Modo Automático ******************** '''
@@ -195,7 +196,7 @@ layout = layout([
 ])
 
 
-panel1 = Panel(child=row(Column(label1, row(Column(dataRecordingButton, dataRecordingLabel), Column(extensionsSelect)), refEst1, refEst2, row(Column(valvula1Label, Kp1,
+panel1 = Panel(child=row(Column(label1, row(Column(dataRecordingButton, dataRecordingLabel), Column(extensionsDropdown)), refEst1, refEst2, row(Column(valvula1Label, Kp1,
                 Ki1, Kd1), Column(valvula2Label, Kp2, Ki2, Kd2)), alarm),
                 layout), title='Modo Automático')
 panel2 = Panel(child=row(Column(label2, dataRecordingButton, dataRecordingLabel, row(Column(valvula1Label, voltageV1, razonFlujoV1),
@@ -285,11 +286,10 @@ dataRecordingButton.on_click(recordingButtonClicked)
 
 
 # Dropdown
-def extensionsSelectClicked(attrname, old, new):
-    print(old, new)
+def extensionsDropdownChanged(event):
+    print(event.item)
 
-extensionsSelect.on_change('value', extensionsSelect)
-
+extensionsDropdown.on_event(MenuItemClick, extensionsDropdownChanged)
 
 # Tabs
 def panelActive(attr, old, new):
