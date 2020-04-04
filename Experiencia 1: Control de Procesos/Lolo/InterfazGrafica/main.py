@@ -10,9 +10,10 @@ from bokeh.layouts import layout, row
 from cliente_control import Cliente
 import threading
 import json
-
+from PID import PID
 
 ''' ******************** Client ******************** '''
+
 
 def funcion_handler(node, val):
     key = node.get_parent().get_display_name().Text
@@ -127,9 +128,6 @@ class SubHandler(object):
             changeWarningList()
 
 
-
-
-
 cliente = Cliente("opc.tcp://127.0.0.1:4840/freeopcua/server/", suscribir_eventos=True, SubHandler=SubHandler)
 cliente.conectar()
 
@@ -153,6 +151,11 @@ extension = None
 n_archivos = 0
 cont = 0
 warning_devices = []
+primer_ciclo = True
+
+'''************************************ Controladores PID ***************************'''
+pid1 = PID()
+pid2 = PID()
 
 ''' ******************** Alarmas y botones ******************** '''
 
@@ -168,25 +171,25 @@ dataRecordingLabel.visible = False
 extensionsMenu = [("csv", "csv"), ("txt", "txt"), ("npy", "npy")]
 extensionsDropdown = Dropdown(label="Guardar los datos con extensión:", button_type="success", menu=extensionsMenu)
 
-
 ''' ******************** Modo Automático ******************** '''
 
 label1 = Div(text='<h1>Modo Automático &#9889;</h1><hr>')
 refEst1 = Slider(title="Altura de Referencia Estanque 1", value=40, start=0.0,
-             end=50.0, step=0.1)
+                 end=50.0, step=0.1)
 refEst2 = Slider(title="Altura de Referencia Estanque 2", value=40, start=0.0,
-             end=50.0, step=0.1)
+                 end=50.0, step=0.1)
 
 valvula1Label = Div(text='<h3>Válvula 1</h3><hr>')
-Kp1 = TextInput(title="Constante Proporcional", value='0')
-Ki1 = TextInput(title="Constante Integral", value='0')
-Kd1 = TextInput(title="Constante Derivativa", value='0')
+Kp1 = TextInput(title="Constante Proporcional", value='{}'.format(pid1.Kp))
+Ki1 = TextInput(title="Constante Integral", value='{}'.format(pid1.Ki))
+Kd1 = TextInput(title="Constante Derivativa", value='{}'.format(pid1.Kd))
+Kw1 = TextInput(title="Constante Anti W-UP", value='{}'.format(pid1.Kw))
 
 valvula2Label = Div(text='<h3>Válvula 2</h3><hr>')
-Kp2 = TextInput(title="Constante Proporcional", value='0')
-Ki2 = TextInput(title="Constante Integral", value='0')
-Kd2 = TextInput(title="Constante Derivativa", value='0')
-
+Kp2 = TextInput(title="Constante Proporcional", value='{}'.format(pid2.Kp))
+Ki2 = TextInput(title="Constante Integral", value='{}'.format(pid2.Ki))
+Kd2 = TextInput(title="Constante Derivativa", value='{}'.format(pid2.Kd))
+Kw2 = TextInput(title="Constante Anti W-UP", value='{}'.format(pid2.Kw))
 
 ''' ******************** Modo Manual ******************** '''
 
@@ -199,7 +202,6 @@ razonFlujoV1 = Slider(title="Razón de Flujo Válvula 1", value=0.0, start=0.0,
                       end=0.99, step=0.01)
 razonFlujoV2 = Slider(title="Razón de Flujo Válvula 2", value=0.0, start=0.0,
                       end=0.99, step=0.01)
-
 
 ''' ******************** Figures ******************** '''
 
@@ -260,12 +262,17 @@ fig_vol2.xaxis.axis_label = 'Tiempo [S]'
 fig_vol2.yaxis.axis_label = 'Voltaje [V]'
 fig_vol2.legend.location = "top_left"
 
-
 ''' ******************** Main Loop ******************** '''
+
 
 # Funcion principal que se llama cada cierto tiempo para mostrar la informacion
 def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostrar la informacion
-    global t, ref1, ref2, automatico, cont
+    global t, ref1, ref2, automatico, cont, primer_ciclo
+    if primer_ciclo:
+        pid1.reset()
+        pid2.reset()
+        primer_ciclo = False
+
 
     h1 = cliente.alturas['H1'].get_value()
     h2 = cliente.alturas['H2'].get_value()
@@ -278,6 +285,10 @@ def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostra
     if automatico:
         ref11 = ref1
         ref22 = ref2
+        u1 = pid1.update(h1)
+        u2 = pid2.update(h2)
+        cliente.valvulas['valvula1'].set_value(u1)
+        cliente.valvulas['valvula2'].set_value(u2)
     else:
         ref11 = -1
         ref22 = -1
@@ -290,7 +301,7 @@ def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostra
     if datos_a_guardar is not None:
         g1 = cliente.razones['razon1'].get_value()
         g2 = cliente.razones['razon2'].get_value()
-        datos_a_guardar.loc[cont] = [t, h1, h2, h3, h4, ref11, ref22, 0, 0, 0, 0, 0, 0, 0, 0, v1, v2, g1, g2]
+        datos_a_guardar.loc[cont] = [t, h1, h2, h3, h4, ref11, ref22, *pid1.ctes(), *pid2.ctes(), v1, v2, g1, g2]
         cont += 1
 
     t += 1
@@ -302,43 +313,68 @@ layout = layout([
     [fig_vol1, fig_vol2]
 ])
 
-
-panel1 = Panel(child=row(Column(label1, row(Column(dataRecordingButton, dataRecordingLabel), Column(extensionsDropdown)), refEst1, refEst2, row(Column(valvula1Label, Kp1,
-                Ki1, Kd1), Column(valvula2Label, Kp2, Ki2, Kd2)), row(alarm, alarm_list)),
-                layout), title='Modo Automático')
-panel2 = Panel(child=row(Column(label2, row(Column(dataRecordingButton, dataRecordingLabel), Column(extensionsDropdown)), row(Column(valvula1Label, voltageV1, razonFlujoV1),
+panel1 = Panel(child=row(
+    Column(label1, row(Column(dataRecordingButton, dataRecordingLabel), Column(extensionsDropdown)), refEst1, refEst2,
+           row(Column(valvula1Label, Kp1,
+                      Ki1, Kd1, Kw1), Column(valvula2Label, Kp2, Ki2, Kd2, Kw2)), row(alarm, alarm_list)),
+    layout), title='Modo Automático')
+panel2 = Panel(child=row(
+    Column(label2, row(Column(dataRecordingButton, dataRecordingLabel), Column(extensionsDropdown)),
+           row(Column(valvula1Label, voltageV1, razonFlujoV1),
                Column(valvula2Label, voltageV2, razonFlujoV2)), row(alarm, alarm_list)), layout), title='Modo Manual')
 
 # Tabs
 tabs = Tabs(tabs=[panel1, panel2])
 
-
 ''' ******************** Events functions ******************** '''
 
-textInputs = [Kp1, Ki1, Kd1, Kp2, Ki2, Kd2]
 
 sliderInputs = [refEst1, refEst2, voltageV1, voltageV2, razonFlujoV1,
                 razonFlujoV2]
 
-# Texto
-def textChanges(attr, old, new):
-    '''
-    Get excecuted when a text input changes
-    '''
-    kp1 = Kp1.value
-    ki1 = Ki1.value
-    kd1 = Kd1.value
 
-    print(f'\nConstantes del pid:')
-    print('kp:', kp1)
-    print('ki:', ki1)
-    print('kd:', kd1)
+# Texto
+def kp1_change(attr, old, new):
+    pid1.Kp = float(new)
+Kp1.on_change('value', kp1_change)
+
+def ki1_change(attr, old, new):
+    pid1.Ki = float(new)
+Ki1.on_change('value', ki1_change)
+
+def kd1_change(attr, old, new):
+    pid1.Kd = float(new)
+Kd1.on_change('value', kd1_change)
+
+def kw1_change(attr, old, new):
+    pid1.Kw = float(new)
+Kw1.on_change('value', kw1_change)
+
+
+def kp2_change(attr, old, new):
+    pid2.Kp = float(new)
+Kp2.on_change('value', kp2_change)
+
+def ki2_change(attr, old, new):
+    pid2.Ki = float(new)
+Ki2.on_change('value', ki2_change)
+
+def kd2_change(attr, old, new):
+    pid2.Kd = float(new)
+Kd2.on_change('value', kd2_change)
+
+def kw2_change(attr, old, new):
+    pid2.Kw = float(new)
+Kw2.on_change('value', kw2_change)
+
 
 
 # Sliders
 def slider_changes_ref1(attr, old, new):
     global ref1
     ref1 = new
+    pid1.ref = ref1
+
 
 refEst1.on_change('value', slider_changes_ref1)
 
@@ -346,6 +382,8 @@ refEst1.on_change('value', slider_changes_ref1)
 def slider_changes_ref2(attr, old, new):
     global ref2
     ref2 = new
+    pid2.ref = ref2
+
 
 refEst2.on_change('value', slider_changes_ref2)
 
@@ -353,11 +391,13 @@ refEst2.on_change('value', slider_changes_ref2)
 def slider_changes_voltaje1(attr, old, new):
     cliente.valvulas['valvula1'].set_value(new)
 
+
 voltageV1.on_change('value', slider_changes_voltaje1)
 
 
 def slider_changes_voltaje2(attr, old, new):
     cliente.valvulas['valvula2'].set_value(new)
+
 
 voltageV2.on_change('value', slider_changes_voltaje2)
 
@@ -365,11 +405,13 @@ voltageV2.on_change('value', slider_changes_voltaje2)
 def slider_changes_razon1(attr, old, new):
     cliente.razones['razon1'].set_value(new)
 
+
 razonFlujoV1.on_change('value', slider_changes_razon1)
 
 
 def slider_changes_razon2(attr, old, new):
     cliente.razones['razon2'].set_value(new)
+
 
 razonFlujoV2.on_change('value', slider_changes_razon2)
 
@@ -397,10 +439,11 @@ def recordingButtonClicked():
         dataRecordingButton.button_type = 'danger'
         dataRecordingButton.label = 'Dejar de adquirir datos'
         datos_a_guardar = pd.DataFrame(columns=['Tiempo', 'Tanque1', 'Tanque2', 'Tanque3', 'Tanque4', 'Ref1', 'Ref2',
-                                                 'kp1', 'ki1', 'kd1', 'kw1', 'kp2', 'ki2', 'kd2', 'kw2', 'V1', 'V2',
-                                                 'Gamma1', 'Gamma2'])
+                                                'kp1', 'ki1', 'kd1', 'kw1', 'kp2', 'ki2', 'kd2', 'kw2', 'V1', 'V2',
+                                                'Gamma1', 'Gamma2'])
 
     dataRecordingLabel.visible = not dataRecordingLabel.visible
+
 
 dataRecordingButton.on_click(recordingButtonClicked)
 
@@ -409,6 +452,7 @@ dataRecordingButton.on_click(recordingButtonClicked)
 def extensionsDropdownChanged(event):
     global extension
     extension = event.item
+
 
 extensionsDropdown.on_event(MenuItemClick, extensionsDropdownChanged)
 
@@ -425,11 +469,8 @@ def panelActive(attr, old, new):
     elif tabs.active == 1:
         print('Modo manual activado')
 
+
 tabs.on_change('active', panelActive)
-
-
-for text in textInputs:
-    text.on_change('value', textChanges)
 
 
 ''' ******************** Curdoc ******************** '''
