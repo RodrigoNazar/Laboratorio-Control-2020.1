@@ -33,7 +33,7 @@ def changeWarningList():
 
     for device in warning_devices:
         dispositivo = device['dispositivo']
-        dispositivo = f'<li>{dispositivo}<p>¡Revisa sus niveles!</p></li>'
+        dispositivo = f'<li>{dispositivo}<p>¡Revisar niveles!</p></li>'
 
         middle += dispositivo
 

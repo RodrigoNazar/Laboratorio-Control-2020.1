@@ -80,7 +80,7 @@ ul {
 }
 ul li {
   position: relative;
-  font: bold italic 25px/1.5 Helvetica, Verdana, sans-serif;
+  font: bold italic 22px/1.5 Helvetica, Verdana, sans-serif;
   margin-bottom: 10px;
   color: #b85151;
 }
