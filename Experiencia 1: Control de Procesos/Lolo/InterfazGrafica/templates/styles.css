@@ -45,6 +45,15 @@ h3 {
     font-size: 1.8em;
     text-transform: uppercase;
 }
+.container h3 {
+    width: 100%;
+    height: auto;
+    text-align: center;
+    color: #b85151;
+    font-family: 'Julius Sans One', sans-serif;
+    font-size: 1em;
+    text-transform: uppercase;
+}
 a:link {
     font-weight: bold;
     text-decoration: none;

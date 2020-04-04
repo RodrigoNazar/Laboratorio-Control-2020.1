@@ -417,6 +417,7 @@ cliente = Cliente("opc.tcp://localhost:4840/freeopcua/server/", suscribir_evento
 cliente.conectar()
 # cliente.subscribir_mv() # Se subscribe a las variables manipuladas
 
+
 ######################### Main loop #################################
 
 # Setup
@@ -434,6 +435,14 @@ sensibilidad = 0.01  # Cambio de las varibles manipuladas cada vez que se apriet
 first_it = True
 
 sistema = QuadrupleTank(x0=x0, Hmax=Hmax, voltmax=voltmax)
+
+cliente.razones['razon1'].set_value(sistema.gamma[0])
+cliente.razones['razon2'].set_value(sistema.gamma[1])
+
+
+cliente.valvulas['valvula1'].set_value(0)
+cliente.valvulas['valvula2'].set_value(0)
+
 sistema.time_scaling = 1  # Para el tiempo
 # interfaz = Interfaz_grafica(Hmax=Hmax)
 # interfaz.paint()
