@@ -33,15 +33,9 @@ def changeWarningList():
 
     for device in warning_devices:
         dispositivo = device['dispositivo']
-        dispositivo = f'<p>{dispositivo}</p>'
+        dispositivo = f'<li>{dispositivo}<p>¡Revisa sus niveles!</p></li>'
 
-        severidad = device['severidad']
-        severidad = f'<li>Severidad de la alerta: {severidad}</li>'
-
-        nivel = device['nivel']
-        nivel = f'<li>Nivel del estanque: {nivel}</li>'
-
-        middle += dispositivo + severidad + nivel
+        middle += dispositivo
 
     print('Cambiando la lista a:')
     print(head + '<ul>' + middle + '</ul>' + tail)
@@ -68,7 +62,7 @@ def eventMessageParser(message):
     '''
     message = message.split()
 
-    return message[2], message[-1]
+    return message[2][:-2], message[-1]
 
 
 class SubHandler(object):

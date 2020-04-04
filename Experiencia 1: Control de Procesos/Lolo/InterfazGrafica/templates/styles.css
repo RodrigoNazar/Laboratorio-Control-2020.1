@@ -74,3 +74,21 @@ p {
     text-align: justify;
     text-justify: inter-word;
 }
+ul {
+  color: #ccc;
+  list-style-type: none;
+}
+ul li {
+  position: relative;
+  font: bold italic 25px/1.5 Helvetica, Verdana, sans-serif;
+  margin-bottom: 10px;
+  color: #b85151;
+}
+li p {
+  font: 12px/1.5 Helvetica, sans-serif;
+  padding-left: 60px;
+  color: #b85151;
+}
+span {
+  position: absolute;
+}
