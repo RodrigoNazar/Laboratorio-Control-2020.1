@@ -38,9 +38,6 @@ def changeWarningList():
 
         middle += dispositivo
 
-    print('Cambiando la lista a:')
-    print(head + '<ul>' + middle + '</ul>' + tail)
-
     alarm_list.text = head + '<ul>' + middle + '</ul>' + tail
 
 
@@ -82,8 +79,6 @@ class SubHandler(object):
     def event_notification(self, event):
         global alarm, t, warning_devices
 
-        print('\nAlarma', )
-
         alarm.visible = True
         alarm_list.visible = True
         event_dict = eventParser(event)
@@ -94,7 +89,6 @@ class SubHandler(object):
 
         existe = False
         indice = 0
-        print('\nAlarma', warning_devices)
 
         # Buscamos si existe el dispositivo en la lista
         for indx, elem in enumerate(warning_devices):
@@ -282,6 +276,7 @@ def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostra
     v1 = cliente.valvulas['valvula1'].get_value()
     v2 = cliente.valvulas['valvula2'].get_value()
 
+    # Modos de funcionamiento
     if automatico:
         ref11 = ref1
         ref22 = ref2
@@ -298,11 +293,23 @@ def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostra
 
     DataSource_tanques.stream(new_data=update, rollover=200)
 
+    # Datos que se guardan
     if datos_a_guardar is not None:
         g1 = cliente.razones['razon1'].get_value()
         g2 = cliente.razones['razon2'].get_value()
         datos_a_guardar.loc[cont] = [t, h1, h2, h3, h4, ref11, ref22, *pid1.ctes(), *pid2.ctes(), v1, v2, g1, g2]
         cont += 1
+
+    # Alarmas
+    for index, _ in enumerate(warning_devices):
+        warning_devices[index]['cooldown'] -= 1
+
+        if warning_devices[index]['cooldown'] <= 0:
+            warning_devices.remove(warning_devices[index])
+
+    if not warning_devices:
+        alarm.visible = False
+        alarm_list.visible = False
 
     t += 1
 
