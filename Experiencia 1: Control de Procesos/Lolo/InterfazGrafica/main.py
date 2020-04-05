@@ -267,7 +267,6 @@ def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostra
         pid2.reset()
         primer_ciclo = False
 
-
     h1 = cliente.alturas['H1'].get_value()
     h2 = cliente.alturas['H2'].get_value()
     h3 = cliente.alturas['H3'].get_value()
@@ -335,7 +334,6 @@ tabs = Tabs(tabs=[panel1, panel2])
 
 ''' ******************** Events functions ******************** '''
 
-
 sliderInputs = [refEst1, refEst2, voltageV1, voltageV2, razonFlujoV1,
                 razonFlujoV2]
 
@@ -343,37 +341,58 @@ sliderInputs = [refEst1, refEst2, voltageV1, voltageV2, razonFlujoV1,
 # Texto
 def kp1_change(attr, old, new):
     pid1.Kp = float(new)
+
+
 Kp1.on_change('value', kp1_change)
+
 
 def ki1_change(attr, old, new):
     pid1.Ki = float(new)
+
+
 Ki1.on_change('value', ki1_change)
+
 
 def kd1_change(attr, old, new):
     pid1.Kd = float(new)
+
+
 Kd1.on_change('value', kd1_change)
+
 
 def kw1_change(attr, old, new):
     pid1.Kw = float(new)
+
+
 Kw1.on_change('value', kw1_change)
 
 
 def kp2_change(attr, old, new):
     pid2.Kp = float(new)
+
+
 Kp2.on_change('value', kp2_change)
+
 
 def ki2_change(attr, old, new):
     pid2.Ki = float(new)
+
+
 Ki2.on_change('value', ki2_change)
+
 
 def kd2_change(attr, old, new):
     pid2.Kd = float(new)
+
+
 Kd2.on_change('value', kd2_change)
+
 
 def kw2_change(attr, old, new):
     pid2.Kw = float(new)
-Kw2.on_change('value', kw2_change)
 
+
+Kw2.on_change('value', kw2_change)
 
 
 # Sliders
@@ -473,13 +492,15 @@ def panelActive(attr, old, new):
     '''
     if tabs.active == 0:
         automatico = True
+        primer_ciclo = True
     elif tabs.active == 1:
         automatico = False
-        primer_ciclo = True
+        voltageV1.value = cliente.valvulas['valvula1'].get_value()
+        print(cliente.valvulas['valvula1'].get_value())
+        voltageV2.value = cliente.valvulas['valvula2'].get_value()
 
 
 tabs.on_change('active', panelActive)
-
 
 ''' ******************** Curdoc ******************** '''
 
