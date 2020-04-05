@@ -1,0 +1,94 @@
+html {
+    width: 100%;
+}
+@import url(https://fonts.googleapis.com/css?family=Noto+Sans);
+body {
+  font-family: 'Noto Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  color: #0f244a;
+  background: #dfeaf5;
+}
+.content {
+    margin: .5em;
+}
+h1 {
+    margin: 2em 0 0 0;
+    color: #2e484c;
+    font-family: 'Julius Sans One', sans-serif;
+    font-size: 1.8em;
+    text-transform: uppercase;
+}
+h3 {
+    margin: 2em 0 0 0;
+    color: #2e484c;
+    font-family: 'Julius Sans One', sans-serif;
+    font-size: 1.2em;
+    text-transform: uppercase;
+}
+.container {
+    width: 200px;
+    height: 120px;
+}
+
+/* resize images */
+.container img {
+    width: 100%;
+    height: auto;
+}
+.container h2 {
+    width: 100%;
+    height: auto;
+    text-align: center;
+    color: #b85151;
+    font-family: 'Julius Sans One', sans-serif;
+    font-size: 1.8em;
+    text-transform: uppercase;
+}
+.container h3 {
+    width: 100%;
+    height: auto;
+    text-align: center;
+    color: #b85151;
+    font-family: 'Julius Sans One', sans-serif;
+    font-size: 1em;
+    text-transform: uppercase;
+}
+a:link {
+    font-weight: bold;
+    text-decoration: none;
+    color: #0d8ba1;
+}
+a:visited {
+    font-weight: bold;
+    text-decoration: none;
+    color: #1a5952;
+}
+a:hover, a:focus, a:active {
+    text-decoration: underline;
+    color: #9685BA;
+}
+p {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 1em;
+    text-align: justify;
+    text-justify: inter-word;
+}
+ul {
+  color: #ccc;
+  list-style-type: none;
+}
+ul li {
+  position: relative;
+  font: bold italic 22px/1.5 Helvetica, Verdana, sans-serif;
+  margin-bottom: 10px;
+  color: #b85151;
+}
+li p {
+  font: 12px/1.5 Helvetica, sans-serif;
+  padding-left: 60px;
+  color: #b85151;
+}
+span {
+  position: absolute;
+}

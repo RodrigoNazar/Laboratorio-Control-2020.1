@@ -11,6 +11,20 @@ from cliente_control import Cliente
 import threading
 import json
 from PID import PID
+from QuadrupleTank import QuadrupleTankRoutine
+from ServidorOPC import ServidorOPCUARutina
+
+
+''' ******************** Threads ******************** '''
+
+
+OPCserverThread = threading.Thread(target=ServidorOPCUARutina)
+OPCserverThread.start()
+OPCserverThread.join(5)
+
+quadrupleTankThread = threading.Thread(target=QuadrupleTankRoutine)
+quadrupleTankThread.start()
+
 
 ''' ******************** Client ******************** '''
 
