@@ -155,7 +155,7 @@ gamma2 = cliente.razones['razon2'].get_value()
 t = 0
 automatico = True
 datos_a_guardar = None
-extension = None
+extension = 'csv'
 n_archivos = 0
 cont = 0
 warning_devices = []
@@ -522,4 +522,4 @@ tabs.on_change('active', panelActive)
 
 curdoc().add_root(tabs)
 curdoc().title = 'Experiencia 1: Control de Procesos'
-curdoc().add_periodic_callback(MainLoop, 100)
+curdoc().add_periodic_callback(MainLoop, 150)
