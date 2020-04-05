@@ -466,15 +466,16 @@ extensionsDropdown.on_event(MenuItemClick, extensionsDropdownChanged)
 
 # Tabs
 def panelActive(attr, old, new):
+    global automatico, primer_ciclo
     '''
     Get excecuted when the other tab is selected
     Changes the operation mode if a tab is changed
     '''
     if tabs.active == 0:
-        print('Modo automático activado')
-
+        automatico = True
     elif tabs.active == 1:
-        print('Modo manual activado')
+        automatico = False
+        primer_ciclo = True
 
 
 tabs.on_change('active', panelActive)
