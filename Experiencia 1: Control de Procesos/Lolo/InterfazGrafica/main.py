@@ -168,9 +168,9 @@ extensionsDropdown = Dropdown(label="Guardar los datos con extensión:", button_
 ''' ******************** Modo Automático ******************** '''
 
 label1 = Div(text='<h1>Modo Automático &#9889;</h1><hr>')
-refEst1 = Slider(title="Altura de Referencia Estanque 1", value=40, start=0.0,
+refEst1 = Slider(title="Altura de Referencia Estanque 1", value=ref1, start=0.0,
                  end=50.0, step=0.1)
-refEst2 = Slider(title="Altura de Referencia Estanque 2", value=40, start=0.0,
+refEst2 = Slider(title="Altura de Referencia Estanque 2", value=ref2, start=0.0,
                  end=50.0, step=0.1)
 
 valvula1Label = Div(text='<h3>Válvula 1</h3><hr>')
@@ -188,13 +188,13 @@ Kw2 = TextInput(title="Constante Anti W-UP", value='{}'.format(pid2.Kw))
 ''' ******************** Modo Manual ******************** '''
 
 label2 = Div(text='<h1>Modo Manual &#9997;</h1><hr>')
-voltageV1 = Slider(title="Voltaje Válvula 1", value=vol1, start=-5.0, end=5.0,
+voltageV1 = Slider(title="Voltaje Válvula 1", value=vol1, start=-1.0, end=1.0,
                    step=0.01)
-voltageV2 = Slider(title="Voltaje Válvula 2", value=vol2, start=-5.0, end=5.0,
+voltageV2 = Slider(title="Voltaje Válvula 2", value=vol2, start=-1.0, end=1.0,
                    step=0.01)
-razonFlujoV1 = Slider(title="Razón de Flujo Válvula 1", value=0.0, start=0.0,
+razonFlujoV1 = Slider(title="Razón de Flujo Válvula 1", value=gamma1, start=0.0,
                       end=0.99, step=0.01)
-razonFlujoV2 = Slider(title="Razón de Flujo Válvula 2", value=0.0, start=0.0,
+razonFlujoV2 = Slider(title="Razón de Flujo Válvula 2", value=gamma2, start=0.0,
                       end=0.99, step=0.01)
 
 ''' ******************** Figures ******************** '''
