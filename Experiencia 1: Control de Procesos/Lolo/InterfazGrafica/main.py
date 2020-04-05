@@ -400,6 +400,7 @@ def slider_changes_ref1(attr, old, new):
     global ref1
     ref1 = new
     pid1.ref = ref1
+    pid1.I = 0
 
 
 refEst1.on_change('value', slider_changes_ref1)
@@ -409,6 +410,7 @@ def slider_changes_ref2(attr, old, new):
     global ref2
     ref2 = new
     pid2.ref = ref2
+    pid2.I = 0
 
 
 refEst2.on_change('value', slider_changes_ref2)
