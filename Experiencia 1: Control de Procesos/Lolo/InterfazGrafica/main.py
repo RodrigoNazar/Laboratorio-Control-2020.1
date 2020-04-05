@@ -496,7 +496,6 @@ def panelActive(attr, old, new):
     elif tabs.active == 1:
         automatico = False
         voltageV1.value = cliente.valvulas['valvula1'].get_value()
-        print(cliente.valvulas['valvula1'].get_value())
         voltageV2.value = cliente.valvulas['valvula2'].get_value()
 
 
@@ -506,4 +505,4 @@ tabs.on_change('active', panelActive)
 
 curdoc().add_root(tabs)
 curdoc().title = 'Experiencia 1: Control de Procesos'
-curdoc().add_periodic_callback(MainLoop, 150)
+curdoc().add_periodic_callback(MainLoop, 100)
