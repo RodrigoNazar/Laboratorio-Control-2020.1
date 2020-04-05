@@ -88,7 +88,7 @@ class Cliente():
         try:
             self.client.connect()
             self.objects = self.client.get_objects_node()
-            print('Cliente OPCUA se ha conectado')
+            # print('Cliente OPCUA se ha conectado')
             self.Instanciacion()
 
         except:
