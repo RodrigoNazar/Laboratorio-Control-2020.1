@@ -148,8 +148,8 @@ warning_devices = []
 primer_ciclo = True
 
 '''************************************ Controladores PID ***************************'''
-pid1 = PID()
-pid2 = PID()
+pid1 = PID(ref1, 0.7574, 0.01421, -1.083)
+pid2 = PID(ref2, 0.74821, 0.009596, 3.1661)
 
 ''' ******************** Alarmas y botones ******************** '''
 

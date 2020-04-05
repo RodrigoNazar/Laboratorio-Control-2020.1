@@ -2,7 +2,7 @@ import time
 
 
 class PID:
-    def __init__(self, ref=40, Kp=0.01, Ki=0.08, Kd=0.05, Kw=0, voltmax=1):
+    def __init__(self, ref=40, Kp=0.01, Ki=0.08, Kd=0.05, Kw=0.01, voltmax=1):
         self.Kp = Kp
         self.Ki = Ki
         self.Kd = Kd
