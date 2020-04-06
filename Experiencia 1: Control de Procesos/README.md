@@ -43,8 +43,9 @@ Luego ejecutar:
 ```
 bokeh serve --show OPC-QuadrupleTank
 ```
+*Si, hay que referenciar a la carpeta.*
 
-Y debería abrirse una ventana en el navegador con la interfaz
+Con esto, debería abrirse una ventana en el navegador con la interfaz.
 
 
 ## Autores
