@@ -134,3 +134,4 @@ dmypy.json
 *.sql-journal
 *.csv
 *.npy
+.idea
