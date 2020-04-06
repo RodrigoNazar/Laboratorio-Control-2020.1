@@ -1,21 +1,80 @@
 import numpy as np
-import pandas as pan
+import pandas as pd
+
 from bokeh.models import (Div, Tabs, Panel, Slider, Column, TextInput, PreText,
                           ColumnDataSource, Button, Select, Dropdown)
 from bokeh.events import MenuItemClick
 from bokeh.plotting import curdoc, figure
 from bokeh.layouts import layout, row
 
-from cliente_control import Cliente
+from cliente import Cliente
 import threading
+import json
+from PID import PID
+from QuadrupleTank import QuadrupleTankRoutine
+from ServidorOPC import ServidorOPCUARutina
+
+
+''' ******************** Threads del Servidor y Planta ******************** '''
+
+
+OPCserverThread = threading.Thread(target=ServidorOPCUARutina)
+OPCserverThread.start()
+OPCserverThread.join(5)
+
+quadrupleTankThread = threading.Thread(target=QuadrupleTankRoutine)
+quadrupleTankThread.start()
+
 
 ''' ******************** Client ******************** '''
 
 
 def funcion_handler(node, val):
     key = node.get_parent().get_display_name().Text
-    if key == 'Tanque1':
-        lolito = val
+
+
+def changeWarningList():
+    global alarm_list, warning_devices
+
+    text = alarm_list.text
+
+    start = text.find("<ul>")
+    end = text.find("</ul>") + len('</ul>')
+
+    head = text[:start]
+    tail = text[end:]
+
+    middle = ''
+
+    for device in warning_devices:
+        dispositivo = device['dispositivo']
+        dispositivo = f'<li>{dispositivo}<p>¡Revisar niveles!</p></li>'
+
+        middle += dispositivo
+
+    alarm_list.text = head + '<ul>' + middle + '</ul>' + tail
+
+
+def eventParser(event):
+    '''
+    Los objetos event vienen en una forma que se hace muy dificil de obtener los
+    datos que trae.
+    Esta función busca facilitar el método de adquisición de los datos.
+    '''
+    return {k: v for k, v in event.__dict__.items() if k not in event.internal_properties}
+
+
+def eventMessageParser(message):
+    '''
+    Los mensajes de los eventos son un string de la forma:
+
+    Alarma en: Tanque3-h valor: 8.034358101949158
+
+    Este método busca mejorar la adquisición de los datos del mensaje
+    '''
+    message = message.split()
+
+    return message[2][:-2], message[-1]
 
 
 class SubHandler(object):
@@ -32,7 +91,49 @@ class SubHandler(object):
         thread_handler.start()
 
     def event_notification(self, event):
-        print("Python: New event", event)
+        global alarm, t, warning_devices
+
+        alarm.visible = True
+        alarm_list.visible = True
+        event_dict = eventParser(event)
+
+        nivel = event_dict['Nivel']
+        dispositivo, valor = eventMessageParser(event_dict['Mensaje'])
+        severidad = event_dict['Severity']
+
+        existe = False
+        indice = 0
+
+        # Buscamos si existe el dispositivo en la lista
+        for indx, elem in enumerate(warning_devices):
+            if dispositivo == elem['dispositivo']:
+                existe = True
+                indice = indx
+
+        if existe:
+            # Elevamos el cooldown
+            elem = warning_devices[indx]
+            elem['cooldown'] = 50
+
+            # Sólo si hay info que actualizar, se actualiza la lista en el front
+            if nivel != elem['nivel']:
+                warning_devices[indx]['nivel'] = nivel
+                changeWarningList()
+
+        # Si el dispositivo no existe
+        if not existe:
+            # Insertamos el elemento en la lista de warning
+            elem = {
+                'dispositivo': dispositivo,
+                'nivel': nivel,
+                'severidad': severidad,
+                'cooldown': 50
+            }
+
+            warning_devices.append(elem)
+
+            # Actualizamos la lista en el front
+            changeWarningList()
 
 
 cliente = Cliente("opc.tcp://127.0.0.1:4840/freeopcua/server/", suscribir_eventos=True, SubHandler=SubHandler)
@@ -54,14 +155,23 @@ gamma2 = cliente.razones['razon2'].get_value()
 t = 0
 automatico = True
 datos_a_guardar = None
-extension = None
+extension = 'csv'
 n_archivos = 0
 cont = 0
+warning_devices = []
+primer_ciclo = True
+
+'''************************************ Controladores PID ***************************'''
+
+pid1 = PID(ref1, 1.54906297472204, 0.0189654163459693, -0.203319704347041, 0.001)
+pid2 = PID(ref2, 4.71044076499288, 0.173011953172168, -0.206087043008361, 0.01)
 
 ''' ******************** Alarmas y botones ******************** '''
 
 alarm = Div(text='<div class="container"><h2>¡ALARMA!</h2><img src="InterfazGrafica/static/alarm.png"></div>')
 alarm.visible = False
+alarm_list = Div(text='<div class="container"><h3>Dispositivos que presentan problemas:</h3><ul></ul></div>')
+alarm_list.visible = False
 
 dataRecordingButton = Button(label="Comenzar a adquirir datos", button_type="success")
 dataRecordingLabel = Div(text='<p>Adquiriendo datos...</p>')
@@ -73,31 +183,33 @@ extensionsDropdown = Dropdown(label="Guardar los datos con extensión:", button_
 ''' ******************** Modo Automático ******************** '''
 
 label1 = Div(text='<h1>Modo Automático &#9889;</h1><hr>')
-refEst1 = Slider(title="Altura de Referencia Estanque 1", value=40, start=0.0,
+refEst1 = Slider(title="Altura de Referencia Estanque 1", value=ref1, start=0.0,
                  end=50.0, step=0.1)
-refEst2 = Slider(title="Altura de Referencia Estanque 2", value=40, start=0.0,
+refEst2 = Slider(title="Altura de Referencia Estanque 2", value=ref2, start=0.0,
                  end=50.0, step=0.1)
 
 valvula1Label = Div(text='<h3>Válvula 1</h3><hr>')
-Kp1 = TextInput(title="Constante Proporcional", value='0')
-Ki1 = TextInput(title="Constante Integral", value='0')
-Kd1 = TextInput(title="Constante Derivativa", value='0')
+Kp1 = TextInput(title="Constante Proporcional", value='{}'.format(pid1.Kp))
+Ki1 = TextInput(title="Constante Integral", value='{}'.format(pid1.Ki))
+Kd1 = TextInput(title="Constante Derivativa", value='{}'.format(pid1.Kd))
+Kw1 = TextInput(title="Constante Anti W-UP", value='{}'.format(pid1.Kw))
 
 valvula2Label = Div(text='<h3>Válvula 2</h3><hr>')
-Kp2 = TextInput(title="Constante Proporcional", value='0')
-Ki2 = TextInput(title="Constante Integral", value='0')
-Kd2 = TextInput(title="Constante Derivativa", value='0')
+Kp2 = TextInput(title="Constante Proporcional", value='{}'.format(pid2.Kp))
+Ki2 = TextInput(title="Constante Integral", value='{}'.format(pid2.Ki))
+Kd2 = TextInput(title="Constante Derivativa", value='{}'.format(pid2.Kd))
+Kw2 = TextInput(title="Constante Anti W-UP", value='{}'.format(pid2.Kw))
 
 ''' ******************** Modo Manual ******************** '''
 
 label2 = Div(text='<h1>Modo Manual &#9997;</h1><hr>')
-voltageV1 = Slider(title="Voltaje Válvula 1", value=vol1, start=-5.0, end=5.0,
+voltageV1 = Slider(title="Voltaje Válvula 1", value=vol1, start=-1.0, end=1.0,
                    step=0.01)
-voltageV2 = Slider(title="Voltaje Válvula 2", value=vol2, start=-5.0, end=5.0,
+voltageV2 = Slider(title="Voltaje Válvula 2", value=vol2, start=-1.0, end=1.0,
                    step=0.01)
-razonFlujoV1 = Slider(title="Razón de Flujo Válvula 1", value=0.0, start=0.0,
+razonFlujoV1 = Slider(title="Razón de Flujo Válvula 1", value=gamma1, start=0.0,
                       end=0.99, step=0.01)
-razonFlujoV2 = Slider(title="Razón de Flujo Válvula 2", value=0.0, start=0.0,
+razonFlujoV2 = Slider(title="Razón de Flujo Válvula 2", value=gamma2, start=0.0,
                       end=0.99, step=0.01)
 
 ''' ******************** Figures ******************** '''
@@ -113,8 +225,8 @@ l1t1 = fig_tanque1.line(x='time', y='ref1', alpha=0.8, line_width=3, color='blac
                         legend_label='Ref')
 l2t1 = fig_tanque1.line(x='time', y='real1', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
                         legend_label='Real')
-fig_tanque1.xaxis.axis_label = 'Tiempo (S)'
-fig_tanque1.yaxis.axis_label = 'Valores'
+fig_tanque1.xaxis.axis_label = 'Tiempo [S]'
+fig_tanque1.yaxis.axis_label = 'Altura [m]'
 fig_tanque1.legend.location = "top_left"
 
 # Tanque 2
@@ -123,48 +235,51 @@ l1t2 = fig_tanque2.line(x='time', y='ref2', alpha=0.8, line_width=3, color='blac
                         legend_label='Ref')
 l2t2 = fig_tanque2.line(x='time', y='real2', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
                         legend_label='Real')
-fig_tanque2.xaxis.axis_label = 'Tiempo (S)'
-fig_tanque2.yaxis.axis_label = 'Valores'
+fig_tanque2.xaxis.axis_label = 'Tiempo [S]'
+fig_tanque2.yaxis.axis_label = 'Altura [m]'
 fig_tanque2.legend.location = "top_left"
 
 # Tanque 3
 fig_tanque3 = figure(title='Tanque 3', plot_width=600, plot_height=300, y_axis_location="left", y_range=(0, 52))
 l1t3 = fig_tanque3.line(x='time', y='real3', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
                         legend_label='Real')
-fig_tanque3.xaxis.axis_label = 'Tiempo (S)'
-fig_tanque3.yaxis.axis_label = 'Valores'
+fig_tanque3.xaxis.axis_label = 'Tiempo [S]'
+fig_tanque3.yaxis.axis_label = 'Altura [m]'
 fig_tanque3.legend.location = "top_left"
 
 # Tanque 4
 fig_tanque4 = figure(title='Tanque 4', plot_width=600, plot_height=300, y_axis_location="left", y_range=(0, 52))
 l1t4 = fig_tanque4.line(x='time', y='real4', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
                         legend_label='Real')
-fig_tanque4.xaxis.axis_label = 'Tiempo (S)'
-fig_tanque4.yaxis.axis_label = 'Valores'
+fig_tanque4.xaxis.axis_label = 'Tiempo [S]'
+fig_tanque4.yaxis.axis_label = 'Altura [m]'
 fig_tanque4.legend.location = "top_left"
 
 # Voltaje1
 fig_vol1 = figure(title='Voltaje 1', plot_width=600, plot_height=300, y_axis_location="left", y_range=(-1, 1))
 fig_vol1.line(x='time', y='vol1', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
               legend_label='Vol1')
-fig_vol1.xaxis.axis_label = 'Tiempo (S)'
-fig_vol1.yaxis.axis_label = '[V]'
+fig_vol1.xaxis.axis_label = 'Tiempo [S]'
+fig_vol1.yaxis.axis_label = 'Voltaje [V]'
 fig_vol1.legend.location = "top_left"
 
 # Voltaje2
 fig_vol2 = figure(title='Voltaje 2', plot_width=600, plot_height=300, y_axis_location="left", y_range=(-1, 1))
 fig_vol2.line(x='time', y='vol2', alpha=0.8, line_width=3, color='red', source=DataSource_tanques,
               legend_label='Vol2')
-fig_vol2.xaxis.axis_label = 'Tiempo (S)'
-fig_vol2.yaxis.axis_label = '[V]'
+fig_vol2.xaxis.axis_label = 'Tiempo [S]'
+fig_vol2.yaxis.axis_label = 'Voltaje [V]'
 fig_vol2.legend.location = "top_left"
 
 ''' ******************** Main Loop ******************** '''
 
-
 # Funcion principal que se llama cada cierto tiempo para mostrar la informacion
 def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostrar la informacion
-    global t, ref1, ref2, automatico, cont
+    global t, ref1, ref2, automatico, cont, primer_ciclo
+    if primer_ciclo:
+        pid1.reset()
+        pid2.reset()
+        primer_ciclo = False
 
     h1 = cliente.alturas['H1'].get_value()
     h2 = cliente.alturas['H2'].get_value()
@@ -174,9 +289,14 @@ def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostra
     v1 = cliente.valvulas['valvula1'].get_value()
     v2 = cliente.valvulas['valvula2'].get_value()
 
+    # Modos de funcionamiento
     if automatico:
         ref11 = ref1
         ref22 = ref2
+        u1 = pid1.update(h1)
+        u2 = pid2.update(h2)
+        cliente.valvulas['valvula1'].set_value(u1)
+        cliente.valvulas['valvula2'].set_value(u2)
     else:
         ref11 = -1
         ref22 = -1
@@ -186,11 +306,24 @@ def MainLoop():  # Funcion principal que se llama cada cierto tiempo para mostra
 
     DataSource_tanques.stream(new_data=update, rollover=200)
 
+    # Datos que se guardan
     if datos_a_guardar is not None:
         g1 = cliente.razones['razon1'].get_value()
         g2 = cliente.razones['razon2'].get_value()
-        datos_a_guardar.loc[cont] = [t, h1, h2, h3, h4, ref11, ref22, 0, 0, 0, 0, 0, 0, 0, 0, v1, v2, g1, g2]
+        datos_a_guardar.loc[cont] = [t, h1, h2, h3, h4, ref11, ref22, *pid1.ctes(), *pid2.ctes(), v1, v2, g1, g2]
         cont += 1
+
+    # Alarmas
+    for index, _ in enumerate(warning_devices):
+        warning_devices[index]['cooldown'] -= 1
+
+        if warning_devices[index]['cooldown'] <= 0:
+            warning_devices.remove(warning_devices[index])
+            changeWarningList()
+
+    if not warning_devices:
+        alarm.visible = False
+        alarm_list.visible = False
 
     t += 1
 
@@ -204,43 +337,85 @@ layout = layout([
 panel1 = Panel(child=row(
     Column(label1, row(Column(dataRecordingButton, dataRecordingLabel), Column(extensionsDropdown)), refEst1, refEst2,
            row(Column(valvula1Label, Kp1,
-                      Ki1, Kd1), Column(valvula2Label, Kp2, Ki2, Kd2)), alarm),
+                      Ki1, Kd1, Kw1), Column(valvula2Label, Kp2, Ki2, Kd2, Kw2)), row(alarm, alarm_list)),
     layout), title='Modo Automático')
 panel2 = Panel(child=row(
     Column(label2, row(Column(dataRecordingButton, dataRecordingLabel), Column(extensionsDropdown)),
            row(Column(valvula1Label, voltageV1, razonFlujoV1),
-               Column(valvula2Label, voltageV2, razonFlujoV2)), alarm), layout), title='Modo Manual')
+               Column(valvula2Label, voltageV2, razonFlujoV2)), row(alarm, alarm_list)), layout), title='Modo Manual')
 
 # Tabs
 tabs = Tabs(tabs=[panel1, panel2])
 
 ''' ******************** Events functions ******************** '''
 
-textInputs = [Kp1, Ki1, Kd1, Kp2, Ki2, Kd2]
-
 sliderInputs = [refEst1, refEst2, voltageV1, voltageV2, razonFlujoV1,
                 razonFlujoV2]
 
 
 # Texto
-def textChanges(attr, old, new):
-    '''
-    Get excecuted when a text input changes
-    '''
-    kp1 = Kp1.value
-    ki1 = Ki1.value
-    kd1 = Kd1.value
+def kp1_change(attr, old, new):
+    pid1.Kp = float(new)
 
-    print(f'\nConstantes del pid:')
-    print('kp:', kp1)
-    print('ki:', ki1)
-    print('kd:', kd1)
+
+Kp1.on_change('value', kp1_change)
+
+
+def ki1_change(attr, old, new):
+    pid1.Ki = float(new)
+
+
+Ki1.on_change('value', ki1_change)
+
+
+def kd1_change(attr, old, new):
+    pid1.Kd = float(new)
+
+
+Kd1.on_change('value', kd1_change)
+
+
+def kw1_change(attr, old, new):
+    pid1.Kw = float(new)
+
+
+Kw1.on_change('value', kw1_change)
+
+
+def kp2_change(attr, old, new):
+    pid2.Kp = float(new)
+
+
+Kp2.on_change('value', kp2_change)
+
+
+def ki2_change(attr, old, new):
+    pid2.Ki = float(new)
+
+
+Ki2.on_change('value', ki2_change)
+
+
+def kd2_change(attr, old, new):
+    pid2.Kd = float(new)
+
+
+Kd2.on_change('value', kd2_change)
+
+
+def kw2_change(attr, old, new):
+    pid2.Kw = float(new)
+
+
+Kw2.on_change('value', kw2_change)
 
 
 # Sliders
 def slider_changes_ref1(attr, old, new):
     global ref1
     ref1 = new
+    pid1.ref = ref1
+    pid1.I = 0
 
 
 refEst1.on_change('value', slider_changes_ref1)
@@ -249,7 +424,8 @@ refEst1.on_change('value', slider_changes_ref1)
 def slider_changes_ref2(attr, old, new):
     global ref2
     ref2 = new
-    alarm.visible = not alarm.visible
+    pid2.ref = ref2
+    pid2.I = 0
 
 
 refEst2.on_change('value', slider_changes_ref2)
@@ -257,7 +433,6 @@ refEst2.on_change('value', slider_changes_ref2)
 
 def slider_changes_voltaje1(attr, old, new):
     cliente.valvulas['valvula1'].set_value(new)
-    alarm.visible = not alarm.visible
 
 
 voltageV1.on_change('value', slider_changes_voltaje1)
@@ -306,9 +481,9 @@ def recordingButtonClicked():
     else:
         dataRecordingButton.button_type = 'danger'
         dataRecordingButton.label = 'Dejar de adquirir datos'
-        datos_a_guardar = pan.DataFrame(columns=['Tiempo', 'Tanque1', 'Tanque2', 'Tanque3', 'Tanque4', 'Ref1', 'Ref2',
-                                                 'kp1', 'ki1', 'kd1', 'kw1', 'kp2', 'ki2', 'kd2', 'kw2', 'V1', 'V2',
-                                                 'Gamma1', 'Gamma2'])
+        datos_a_guardar = pd.DataFrame(columns=['Tiempo', 'Tanque1', 'Tanque2', 'Tanque3', 'Tanque4', 'Ref1', 'Ref2',
+                                                'kp1', 'ki1', 'kd1', 'kw1', 'kp2', 'ki2', 'kd2', 'kw2', 'V1', 'V2',
+                                                'Gamma1', 'Gamma2'])
 
     dataRecordingLabel.visible = not dataRecordingLabel.visible
 
@@ -327,21 +502,21 @@ extensionsDropdown.on_event(MenuItemClick, extensionsDropdownChanged)
 
 # Tabs
 def panelActive(attr, old, new):
+    global automatico, primer_ciclo
     '''
     Get excecuted when the other tab is selected
     Changes the operation mode if a tab is changed
     '''
     if tabs.active == 0:
-        print('Modo automático activado')
-
+        automatico = True
+        primer_ciclo = True
     elif tabs.active == 1:
-        print('Modo manual activado')
+        automatico = False
+        voltageV1.value = cliente.valvulas['valvula1'].get_value()
+        voltageV2.value = cliente.valvulas['valvula2'].get_value()
 
 
 tabs.on_change('active', panelActive)
-
-for text in textInputs:
-    text.on_change('value', textChanges)
 
 ''' ******************** Curdoc ******************** '''
 

@@ -23,7 +23,8 @@ class QuadrupleTank():
         self.kin = 3.33
 
         self.time_scaling = 1
-        self.gamma = [0.7, 0.6]  # %
+        # self.gamma = [0.7, 0.6]  # %
+        self.gamma = [0.35, 0.35]  # %
         self.volt = [0., 0.]  # %
         self.voltmax = voltmax
         self.x = self.x0
@@ -189,8 +190,3 @@ def QuadrupleTankRoutine():
         cliente.alturas['H2'].set_value(alturas[1])
         cliente.alturas['H3'].set_value(alturas[2])
         cliente.alturas['H4'].set_value(alturas[3])
-
-        cliente.temperaturas['T1'].set_value(22 + random.randrange(-7, 7, 1))
-        cliente.temperaturas['T2'].set_value(22 + random.randrange(-7, 7, 1))
-        cliente.temperaturas['T3'].set_value(22 + random.randrange(-7, 7, 1))
-        cliente.temperaturas['T4'].set_value(22 + random.randrange(-7, 7, 1))
