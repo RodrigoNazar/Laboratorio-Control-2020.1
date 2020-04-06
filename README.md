@@ -14,6 +14,7 @@ def keEquipo():
         print('Al lolo le falta carne')
         print('El mathi es un hacker malintencionado')
 
+
 if "__main__" == __name__:
     keEquipo() # ??????????????????
 ```
