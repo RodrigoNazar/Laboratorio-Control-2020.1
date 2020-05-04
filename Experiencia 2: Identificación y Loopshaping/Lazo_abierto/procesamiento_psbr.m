@@ -81,8 +81,8 @@ set(gca, 'FontSize', 20);
 % title('Fase $\angle Gw$', 'FontSize', 34, 'Interpreter', 'latex');
 xlabel('f[$Hz$]', 'FontSize', 20, 'Interpreter', 'latex');
 ylabel('Angulo', 'FontSize', 20, 'Interpreter', 'latex');
-l = suptitle('Diagrama de Bode');
-set(l, 'FontSize', 40, 'Interpreter', 'latex');
+% l = suptitle('Diagrama de Bode');
+% set(l, 'FontSize', 40, 'Interpreter', 'latex');
 
 D = W_YY - abs(W_UY).^2 ./ (W_UU+eps);
 figure;

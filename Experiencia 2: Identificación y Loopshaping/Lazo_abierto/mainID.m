@@ -10,7 +10,7 @@ load('workspaceID.mat');
 figure;
 plot(t_0(2:end), salida_0(2:end), 'LineWidth', 2, 'Color', rand(1,3));
 set(gca, 'FontSize', 20);
-title('Respuesta a entrada 0', 'FontSize', 45, 'Interpreter', 'latex');
+% title('Respuesta a entrada 0', 'FontSize', 45, 'Interpreter', 'latex');
 grid();
 xlabel('$t$', 'Interpreter', 'latex', 'FontSize', 30);
 t = text(0.01, 0.37,sprintf('Media: %f', mean(salida_0(2:end))));
@@ -31,8 +31,8 @@ for i = fix(1:(length(salidas_diff_mag)-1)/7:length(salidas_diff_mag))
     xlabel('$t$', 'Interpreter', 'latex', 'FontSize', 17);
     ylim([-30, 30]);
 end
-l = suptitle('Respuesta a entrada escalones');
-set(l, 'FontSize', 40, 'Interpreter', 'latex');
+% l = suptitle('Respuesta a entrada escalones');
+% set(l, 'FontSize', 40, 'Interpreter', 'latex');
 
 % sinusoides de diferente magnitud y freq
 mag = 0.1:49.9/39:50;
@@ -50,8 +50,8 @@ for m = [3, 5]%:15
         xlabel('$t$', 'Interpreter', 'latex', 'FontSize', 15);
         ylim([-30, 30]);
     end
-    l = suptitle(sprintf('Respuesta a cos de magnitud: %6.3f', mag(m)));
-    set(l, 'FontSize', 40, 'Interpreter', 'latex');
+    % l = suptitle(sprintf('Respuesta a cos de magnitud: %6.3f', mag(m)));
+    % set(l, 'FontSize', 40, 'Interpreter', 'latex');
 end
 
 procesamiento_psbr;
