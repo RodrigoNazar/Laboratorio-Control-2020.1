@@ -19,16 +19,31 @@ xlabel('$t$', 'Interpreter', 'latex', 'FontSize', 30);
 y = detrend(salida_prbs, 'linear');
 y(2:3) = [];
 
+figure;
+plot(t2, y, 'LineWidth', 2, 'Color', rand(1,3));
+set(gca, 'FontSize', 20);
+title('Detrend', 'FontSize', 45, 'Interpreter', 'latex');
+grid();
+xlabel('$t$', 'Interpreter', 'latex', 'FontSize', 30);
+
 % promedio
 y2 = reshape(y, [length(y)/P, P]);
-y2 = y2(:,2:end);
+y2 = y2(:, 2:end);
 y2 = sum(y2, 2) / (P-1);
 
 % sennal
 t = t_prbs(1:N);
 u = entrada_prbs(1:N,2);
 
-% correlacion
+figure;
+plot(t, y2, 'LineWidth', 2, 'Color', rand(1,3));
+set(gca, 'FontSize', 20);
+title('Promedio', 'FontSize', 45, 'Interpreter', 'latex');
+grid();
+xlabel('$t$', 'Interpreter', 'latex', 'FontSize', 30);
+
+
+% Correlacion
 uu = mycorr(u, u);
 uy = mycorr(u, y2);
 yy = mycorr(y2, y2);
@@ -38,7 +53,6 @@ filter = hann(length(uu)).^0.9;
 w_uu = uu .* filter;
 w_uy = uy .* filter;
 w_yy = yy .* filter;
-
 
 n = 2^nextpow2(length(uu));
 W_UU = fft(w_uu, n);
@@ -51,7 +65,7 @@ Gw = W_UY ./ (W_UU+eps);
 
 figure;
 subplot(211);
-semilogx(f, 20* log10( abs(Gw(1:end/2+1))), 'LineWidth', 2, 'Color', rand(1,3));
+semilogx(f, 20*log10(abs(Gw(1:end/2+1))), 'LineWidth', 2, 'Color', rand(1,3));
 grid();
 xlim([0.5 1.4*10^(2)])
 set(gca, 'FontSize', 20);

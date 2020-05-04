@@ -1,10 +1,10 @@
-%% Lazo cerrado 
+%% Lazo cerrado
 clear; close all; clc;
 set(0, 'DefaultFigureWindowStyle', 'docked');
 
 load('LS.mat');
 
-% Entrada 0 
+% Entrada 0
 figure;
 plot(t_entrada0(:), y_entrada0(:,1), 'LineWidth', 2, 'Color', rand(1,3));
 set(gca, 'FontSize', 20);
@@ -16,16 +16,39 @@ set(t, 'FontSize', 15);
 t = text(0.22, 2.65, sprintf('D. Std: %f', std(y_entrada0(:,1))));
 set(t, 'FontSize', 15);
 
-
 y = salida_prbs(:,1);
 u = salida_prbs(1:N,2);
 
+figure;
+plot(t2, y, 'LineWidth', 2, 'Color', rand(1,3));
+set(gca, 'FontSize', 20);
+title('Salida', 'FontSize', 45, 'Interpreter', 'latex');
+grid();
+xlabel('$t$', 'Interpreter', 'latex', 'FontSize', 30);
+xlim([1 600])
+
 y = detrend(y, 'linear');
 
-% promedio 
+figure;
+plot(t2, y, 'LineWidth', 2, 'Color', rand(1,3));
+set(gca, 'FontSize', 20);
+title('Detrend', 'FontSize', 45, 'Interpreter', 'latex');
+grid();
+xlabel('$t$', 'Interpreter', 'latex', 'FontSize', 30);
+xlim([1 600])
+
+% promedio
 y2 = reshape(y, [length(y)/P, P]);
 y2 = y2(:,2:end);
 y2 = sum(y2, 2) / (P-1);
+
+figure;
+plot(t2(1:length(y2)), y2, 'LineWidth', 2, 'Color', rand(1,3));
+set(gca, 'FontSize', 20);
+title('Promedio', 'FontSize', 45, 'Interpreter', 'latex');
+grid();
+xlabel('$t$', 'Interpreter', 'latex', 'FontSize', 30);
+xlim([1 32])
 
 % correlacion
 uu = mycorr(u, u);
@@ -54,7 +77,7 @@ grid();
 xlim([0.5 10^(3)])
 set(gca, 'FontSize', 20);
 title('Magnitud $|Gw|$', 'FontSize', 34, 'Interpreter', 'latex');
-xlabel('f[$Hz$]', 'FontSize', 20, 'Interpreter', 'latex'); 
+xlabel('f[$Hz$]', 'FontSize', 20, 'Interpreter', 'latex');
 ylabel('Magnitud', 'FontSize', 20, 'Interpreter', 'latex');
 
 subplot(212);
@@ -82,7 +105,7 @@ figure ;
 semilogx(f, abs(C(1:end/2+1)), 'LineWidth', 2, 'Color', rand(1,3));
 xlim([0.5 10^(3)]);
 set(gca, 'FontSize', 20);
-title('Espectro de Coherencia','FontSize', 40, 'Interpreter', 'latex'); 
+title('Espectro de Coherencia','FontSize', 40, 'Interpreter', 'latex');
 xlabel('f[$Hz$]', 'FontSize', 20, 'Interpreter', 'latex');
 grid();
 
@@ -91,13 +114,26 @@ r = 0.99; % nivel de confianza
 figure;
 plot(real(Gw), imag(Gw), 'LineWidth', 1.5, 'Color', rand(1,3));
 set(gca, 'FontSize', 20);
-title('Nyquist','FontSize', 40, 'Interpreter', 'latex'); 
+title('Nyquist','FontSize', 40, 'Interpreter', 'latex');
 grid();
 
 figure;
 plot(real(Gw(abs(C)>r)), imag(Gw(abs(C)>r)), 'LineWidth', 1.5, 'Color', rand(1,3));
 set(gca, 'FontSize', 20);
-title(['Nyquist en frecuencias confiables al ', num2str(r)],'FontSize', 40, 'Interpreter', 'latex'); 
+title(['Nyquist en frecuencias confiables al ', num2str(r)],'FontSize', 40, 'Interpreter', 'latex');
 grid();
 
-save_all_figures('./', 'Lazo_cerrado_');
+
+%%
+
+curve = animatedline;
+
+x = real(Gw(abs(C)>r));
+y = imag(Gw(abs(C)>r));
+
+for i=1:50:length(x)
+    addpoints(curve, x(i), y(i));
+    drawnow
+end
+
+% save_all_figures('./', 'Lazo_cerrado_');

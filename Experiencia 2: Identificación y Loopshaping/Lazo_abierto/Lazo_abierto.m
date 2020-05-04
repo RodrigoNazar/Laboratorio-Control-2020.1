@@ -1,8 +1,8 @@
-%% ID 
+%% ID
 clear all; close all; clc;
 set(0, 'DefaultFigureWindowStyle', 'docked');
 
-% Entrada 0 
+% Entrada 0
 load('workspace3.mat');
 
 figure;
@@ -53,5 +53,4 @@ for m = [3, 5]%:15
 end
 
 procesamiento_psbr;
-save_all_figures('./', 'Lazo_abierto_');
-
+% save_all_figures('./', 'Lazo_abierto_');
