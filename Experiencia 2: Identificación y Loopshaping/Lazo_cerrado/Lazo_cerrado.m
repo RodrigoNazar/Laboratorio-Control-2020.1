@@ -124,7 +124,7 @@ title(['Nyquist en frecuencias confiables al ', num2str(r)],'FontSize', 40, 'Int
 grid();
 
 
-%%
+%% Animación del diagrama de Nyquist
 
 curve = animatedline;
 
@@ -136,4 +136,4 @@ for i=1:50:length(x)
     drawnow
 end
 
-% save_all_figures('./', 'Lazo_cerrado_');
+save_all_figures('./', 'Lazo_cerrado_');
