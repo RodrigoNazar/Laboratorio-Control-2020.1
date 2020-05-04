@@ -1,9 +1,11 @@
 %% ID
+% Previo a este archivo se debe ejecutar el módulo de rutina_ID.m desde un PC Windows
+% rutina_ID;
 clear all; close all; clc;
 set(0, 'DefaultFigureWindowStyle', 'docked');
 
 % Entrada 0
-load('workspace3.mat');
+load('workspaceID.mat');
 
 figure;
 plot(t_0(2:end), salida_0(2:end), 'LineWidth', 2, 'Color', rand(1,3));
@@ -24,7 +26,7 @@ for i = fix(1:(length(salidas_diff_mag)-1)/7:length(salidas_diff_mag))
     subplot(2,4,k); k = k + 1;
     plot(salidas_diff_mag{i}(2:end, 1), salidas_diff_mag{i}(2:end, 2), 'LineWidth', 3, 'Color', rand(1,3));
     set(gca, 'FontSize', 15);
-    title(sprintf('Magnitud: %6.3f', entradas_diff_mag{i}(1,2)), 'FontSize', 25, 'Interpreter', 'latex');
+    % title(sprintf('Magnitud: %6.3f', entradas_diff_mag{i}(1,2)), 'FontSize', 25, 'Interpreter', 'latex');
     grid();
     xlabel('$t$', 'Interpreter', 'latex', 'FontSize', 17);
     ylim([-30, 30]);
@@ -43,7 +45,7 @@ for m = [3, 5]%:15
         k = (m-1)*60 + f;
         plot(salidas_diff_cos{k}(2:end, 1), salidas_diff_cos{k}(2:end, 2), 'LineWidth', 3, 'Color', rand(1,3));
         set(gca, 'FontSize', 15);
-        title(sprintf('Freq: %5.3f', freqs(f)), 'FontSize', 25, 'Interpreter', 'latex');
+        % title(sprintf('Freq: %5.3f', freqs(f)), 'FontSize', 25, 'Interpreter', 'latex');
         grid();
         xlabel('$t$', 'Interpreter', 'latex', 'FontSize', 15);
         ylim([-30, 30]);
@@ -53,4 +55,4 @@ for m = [3, 5]%:15
 end
 
 procesamiento_psbr;
-% save_all_figures('./', 'Lazo_abierto_');
+save_all_figures('./', 'Lazo_abierto_');
