@@ -1,14 +1,16 @@
-%% Lazo cerrado
-clear; close all; clc;
+%% CT
+% Previo a este archivo se debe ejecutar el módulo de rutina_ID.m desde un PC Windows
+% rutina_CT;
+clear all; close all; clc;
 set(0, 'DefaultFigureWindowStyle', 'docked');
 
-load('LS.mat');
+load('workspaceCT.mat');
 
 % Entrada 0
 figure;
 plot(t_entrada0(:), y_entrada0(:,1), 'LineWidth', 2, 'Color', rand(1,3));
 set(gca, 'FontSize', 20);
-title('Respuesta a entrada 0', 'FontSize', 45, 'Interpreter', 'latex');
+% title('Respuesta a entrada 0', 'FontSize', 45, 'Interpreter', 'latex');
 grid();
 xlabel('$t$', 'Interpreter', 'latex', 'FontSize', 30);
 t = text(0.22, 2.8,sprintf('Media: %f', mean(y_entrada0(:,1))));
@@ -22,7 +24,7 @@ u = salida_prbs(1:N,2);
 figure;
 plot(t2, y, 'LineWidth', 2, 'Color', rand(1,3));
 set(gca, 'FontSize', 20);
-title('Salida', 'FontSize', 45, 'Interpreter', 'latex');
+% title('Salida', 'FontSize', 45, 'Interpreter', 'latex');
 grid();
 xlabel('$t$', 'Interpreter', 'latex', 'FontSize', 30);
 xlim([1 600])
@@ -32,7 +34,7 @@ y = detrend(y, 'linear');
 figure;
 plot(t2, y, 'LineWidth', 2, 'Color', rand(1,3));
 set(gca, 'FontSize', 20);
-title('Detrend', 'FontSize', 45, 'Interpreter', 'latex');
+% title('Detrend', 'FontSize', 45, 'Interpreter', 'latex');
 grid();
 xlabel('$t$', 'Interpreter', 'latex', 'FontSize', 30);
 xlim([1 600])
@@ -45,7 +47,7 @@ y2 = sum(y2, 2) / (P-1);
 figure;
 plot(t2(1:length(y2)), y2, 'LineWidth', 2, 'Color', rand(1,3));
 set(gca, 'FontSize', 20);
-title('Promedio', 'FontSize', 45, 'Interpreter', 'latex');
+% title('Promedio', 'FontSize', 45, 'Interpreter', 'latex');
 grid();
 xlabel('$t$', 'Interpreter', 'latex', 'FontSize', 30);
 xlim([1 32])
@@ -76,7 +78,7 @@ semilogx(f, 20* log10( abs(Gw(1:end/2+1))), 'LineWidth', 2, 'Color', rand(1,3));
 grid();
 xlim([0.5 10^(3)])
 set(gca, 'FontSize', 20);
-title('Magnitud $|Gw|$', 'FontSize', 34, 'Interpreter', 'latex');
+% title('Magnitud $|Gw|$', 'FontSize', 34, 'Interpreter', 'latex');
 xlabel('f[$Hz$]', 'FontSize', 20, 'Interpreter', 'latex');
 ylabel('Magnitud', 'FontSize', 20, 'Interpreter', 'latex');
 
@@ -85,11 +87,11 @@ semilogx(f, rad2deg(-phase(Gw(1:end/2+1))), 'LineWidth', 2, 'Color', rand(1,3));
 grid();
 xlim([0.5 10^(3)])
 set(gca, 'FontSize', 20);
-title('Fase $\angle Gw$', 'FontSize', 34, 'Interpreter', 'latex');
+% title('Fase $\angle Gw$', 'FontSize', 34, 'Interpreter', 'latex');
 xlabel('f[$Hz$]', 'FontSize', 20, 'Interpreter', 'latex');
 ylabel('Angulo', 'FontSize', 20, 'Interpreter', 'latex');
-l = suptitle('Diagrama de Bode');
-set(l, 'FontSize', 40, 'Interpreter', 'latex');
+% l = suptitle('Diagrama de Bode');
+% set(l, 'FontSize', 40, 'Interpreter', 'latex');
 
 D = W_YY - abs(W_UY).^2 ./ (W_UU+eps);
 figure;
@@ -98,14 +100,14 @@ xlim([1 10^3]);
 set(gca, 'FontSize', 20);
 xlabel('f[$Hz$]', 'FontSize', 20, 'Interpreter', 'latex');
 grid();
-title('Espectro de Perturbacion', 'FontSize', 40, 'Interpreter', 'latex');
+% title('Espectro de Perturbacion', 'FontSize', 40, 'Interpreter', 'latex');
 
 C = sqrt((abs(W_UY).^2)./(W_YY.*W_UU + eps));
 figure ;
 semilogx(f, abs(C(1:end/2+1)), 'LineWidth', 2, 'Color', rand(1,3));
 xlim([0.5 10^(3)]);
 set(gca, 'FontSize', 20);
-title('Espectro de Coherencia','FontSize', 40, 'Interpreter', 'latex');
+% title('Espectro de Coherencia','FontSize', 40, 'Interpreter', 'latex');
 xlabel('f[$Hz$]', 'FontSize', 20, 'Interpreter', 'latex');
 grid();
 
@@ -114,18 +116,19 @@ r = 0.99; % nivel de confianza
 figure;
 plot(real(Gw), imag(Gw), 'LineWidth', 1.5, 'Color', rand(1,3));
 set(gca, 'FontSize', 20);
-title('Nyquist','FontSize', 40, 'Interpreter', 'latex');
+% title('Nyquist','FontSize', 40, 'Interpreter', 'latex');
 grid();
 
 figure;
 plot(real(Gw(abs(C)>r)), imag(Gw(abs(C)>r)), 'LineWidth', 1.5, 'Color', rand(1,3));
 set(gca, 'FontSize', 20);
-title(['Nyquist en frecuencias confiables al ', num2str(r)],'FontSize', 40, 'Interpreter', 'latex');
+% title(['Nyquist en frecuencias confiables al ', num2str(r)],'FontSize', 40, 'Interpreter', 'latex');
 grid();
 
 
 %% Animación del diagrama de Nyquist
 
+figure;
 curve = animatedline;
 
 x = real(Gw(abs(C)>r));

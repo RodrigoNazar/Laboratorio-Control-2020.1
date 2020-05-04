@@ -13,8 +13,8 @@ r = [];
 k = 1;
 m = [0.1, 1, 10, 100, 500, 1000];
 for i = 1%:250
-%     a = m(randi(6))*abs(rand()); 
-%     b = m(randi(6))*abs(rand()); 
+%     a = m(randi(6))*abs(rand());
+%     b = m(randi(6))*abs(rand());
     try
     [t_entrada0,~,y_entrada0] = sim('loopshape',t(end),[],u1);
     figure;
@@ -38,5 +38,3 @@ entrada_prbs = [t2, ones(size(t2)), PRBS];
 tic;
 [t_prbs, ~, salida_prbs] = sim('loopshape', t2(end), [], entrada_prbs);
 toc;
-
-%%

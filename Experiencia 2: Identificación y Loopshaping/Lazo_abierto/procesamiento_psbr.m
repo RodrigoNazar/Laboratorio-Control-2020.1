@@ -1,7 +1,5 @@
 %% Procesamiento PRBS
 
-load('prbs.mat');
-
 figure;
 plot(t2, salida_prbs(3:end), 'LineWidth', 2, 'Color', rand(1,3));
 set(gca, 'FontSize', 20);
